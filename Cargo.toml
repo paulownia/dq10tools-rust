@@ -1,0 +1,18 @@
+[package]
+name = "dq10tools"
+version = "0.1.0"
+authors = ["hisanori <hisary@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "holy-war-in-the-eternal-darkness"
+path = "src/battle1/main.rs"
+
+[[bin]]
+name = "record-of-the-saint-guardians-war"
+path = "src/battle2/main.rs"
+
+[dependencies]
+serde_json = "1.0"
+
+
