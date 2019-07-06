@@ -6,13 +6,12 @@ edition = "2018"
 
 [[bin]]
 name = "holy-war-in-the-eternal-darkness"
-path = "src/battle1/main.rs"
+path = "src/eternal_darkness/main.rs"
 
 [[bin]]
 name = "record-of-the-saint-guardians-war"
-path = "src/battle2/main.rs"
+path = "src/saint_guardians/main.rs"
 
 [dependencies]
 serde_json = "1.0"
-
-
+chrono = "0.4"
