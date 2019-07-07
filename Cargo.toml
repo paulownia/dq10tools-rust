@@ -12,6 +12,10 @@ path = "src/eternal_darkness/main.rs"
 name = "record-of-the-saint-guardians-war"
 path = "src/saint_guardians/main.rs"
 
+[[bin]]
+name = "astoltia-standard-time"
+path = "src/ast/main.rs"
+
 [dependencies]
 serde_json = "1.0"
 chrono = "0.4"
