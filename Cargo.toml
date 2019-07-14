@@ -16,6 +16,14 @@ path = "src/saint_guardians/main.rs"
 name = "astoltia-standard-time"
 path = "src/ast/main.rs"
 
+[[bin]]
+name = "defence-force"
+path = "src/defence_force/main1.rs"
+
+[[bin]]
+name = "defence-force-schedule"
+path = "src/defence_force/main2.rs"
+
 [dependencies]
 serde_json = "1.0"
 chrono = "0.4"
