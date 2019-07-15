@@ -1,1 +1,1 @@
-pub mod army;
+pub mod troop;

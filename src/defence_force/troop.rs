@@ -1,14 +1,13 @@
 use chrono::{TimeZone, DateTime, Local, Duration, Datelike, Timelike};
 
 #[derive(PartialEq, Eq)]
-pub struct Army {
+pub struct Troop {
     pub name: &'static str,
-    pub color: u32,
-}
+    pub color: u32, }
 
-impl Army {
-    fn new(data: &X) -> Army {
-        Army {
+impl Troop {
+    fn new(data: &X) -> Troop {
+        Troop {
             name: data.1,
             color: data.0
         }
@@ -41,8 +40,8 @@ const CYCLE: [&X; 7] = [
 ];
 
 pub struct State {
-    pub army: Army,
-    pub next_army: Army,
+    pub troop: Troop,
+    pub next_troop: Troop,
     pub next_in: u32,
     pub changed_at: chrono::DateTime<Local>
 }
@@ -66,8 +65,8 @@ pub fn get_state(dt: &DateTime<Local>) -> State {
     let changed_at = dt.clone() + Duration::minutes(next_in as i64);
 
     return State {
-        army: Army::new(&CYCLE[index]),
-        next_army: Army::new(&CYCLE[next_index]),
+        troop: Troop::new(&CYCLE[index]),
+        next_troop: Troop::new(&CYCLE[next_index]),
         next_in: next_in,
         changed_at: changed_at
     }
@@ -79,7 +78,7 @@ fn index(dt: &DateTime<Local>) -> usize {
 
 pub struct Event {
     pub started_at: DateTime<Local>,
-    pub army: Army
+    pub troop: Troop
 }
 
 pub fn get_current_schedule() -> Vec<Event> {
@@ -106,9 +105,19 @@ pub fn get_schedule(dt: &DateTime<Local>) -> Vec<Event> {
 
         vec.push(Event{
             started_at: dt + duration,
-            army: Army::new(x)
+            troop: Troop::new(x)
         })
     }
 
     vec
+}
+
+
+#[test]
+fn test_get_state() {
+    let dt = Local.ymd(2018, 9, 20).and_hms(15, 3, 15);
+    let state = get_state(&dt);
+    assert_eq!(state.troop.name, "闇朱の獣牙兵団");
+    assert_eq!(state.next_troop.name, "紫炎の鉄機兵団");
+
 }
