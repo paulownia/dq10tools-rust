@@ -5,6 +5,10 @@ pub struct Next {
     pub after_minutes: u32,
 }
 
+pub fn now() -> NaiveTime {
+    convert(Local::now())
+}
+
 pub fn convert(jst: DateTime<Local>) -> NaiveTime {
     let jst0h = Local.ymd(jst.year(), jst.month(), jst.day()).and_hms(0, 0, 0);
     let duration = jst - jst0h;
