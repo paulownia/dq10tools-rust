@@ -1,4 +1,4 @@
-use chrono::{TimeZone, DateTime, Local, Duration, Datelike, Timelike};
+use chrono::{DateTime, Local, Datelike, Timelike};
 
 #[derive(Eq, PartialEq)]
 pub struct Troop(&'static str, u32);
@@ -43,44 +43,3 @@ pub fn get_troop_by_period(p: usize) -> &'static Troop {
     let index = p % CYCLE.len();
     CYCLE[index]
 }
-
-
-
-
-pub struct Event {
-    pub started_at: DateTime<Local>,
-    pub troop: &'static Troop
-}
-
-pub fn get_current_schedule() -> Vec<Event> {
-    get_schedule(Local::now())
-}
-
-pub fn get_schedule(dt: DateTime<Local>) -> Vec<Event> {
-    let mut vec: Vec<Event> = Vec::with_capacity(24);
-    let period = calc_period(dt);
-
-    let dt = Local.ymd(dt.year(), dt.month(), dt.day()).and_hms(dt.hour(), 0, 0);
-
-    for i in 0..24 {
-        let x = get_troop_by_period(period + i);
-
-        if i > 1 {
-            let prev = get_troop_by_period(period + i - 1);
-            if x == prev {
-                continue
-            }
-        }
-
-        let duration = Duration::hours(i as i64);
-
-        vec.push(Event{
-            started_at: dt + duration,
-            troop: x
-        })
-    }
-
-    vec
-}
-
-
