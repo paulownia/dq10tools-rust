@@ -42,3 +42,20 @@ pub fn get_schedule(dt: DateTime<Local>) -> Vec<Event> {
 
     vec
 }
+
+#[cfg(test)]
+mod tests {
+    use chrono::prelude::*;
+    #[test]
+    fn test_get_schedule() {
+        let dt = chrono::Local.ymd(2018, 9, 22).and_hms(23, 45, 10);
+        let schedule = super::get_schedule(dt);
+        assert_eq!(schedule.len(), 24);
+        assert_eq!(schedule[0].started_at.year(), 2018);
+        assert_eq!(schedule[0].started_at.month(), 9);
+        assert_eq!(schedule[0].started_at.day(), 22);
+        assert_eq!(schedule[0].started_at.hour(), 23);
+        assert_eq!(schedule[0].troop.name(), "闇朱の獣牙兵団");
+    }
+}
+
