@@ -42,10 +42,10 @@ pub struct State {
 }
 
 pub fn get_current_state() -> State {
-    get_state(&Local::now())
+    get_state(Local::now())
 }
 
-fn calc_period(dt: &DateTime<Local>) -> usize {
+fn calc_period(dt: DateTime<Local>) -> usize {
     (dt.weekday().num_days_from_sunday() * 24 + dt.hour()) as usize
 }
 
@@ -58,8 +58,8 @@ fn is_same_troop(p1: usize, p2: usize) -> bool {
     get_troop_by_period(p1) == get_troop_by_period(p2)
 }
 
-pub fn get_state(dt: &DateTime<Local>) -> State {
-    let period = calc_period(&dt);
+pub fn get_state(dt: DateTime<Local>) -> State {
+    let period = calc_period(dt);
 
     let mut next_in = 60 - dt.minute();
 
@@ -87,12 +87,12 @@ pub struct Event {
 }
 
 pub fn get_current_schedule() -> Vec<Event> {
-    get_schedule(&Local::now())
+    get_schedule(Local::now())
 }
 
-pub fn get_schedule(dt: &DateTime<Local>) -> Vec<Event> {
+pub fn get_schedule(dt: DateTime<Local>) -> Vec<Event> {
     let mut vec: Vec<Event> = Vec::with_capacity(24);
-    let period = calc_period(&dt);
+    let period = calc_period(dt);
 
     let dt = Local.ymd(dt.year(), dt.month(), dt.day()).and_hms(dt.hour(), 0, 0);
 
@@ -121,7 +121,7 @@ pub fn get_schedule(dt: &DateTime<Local>) -> Vec<Event> {
 #[test]
 fn test_get_state() {
     let dt = Local.ymd(2018, 9, 20).and_hms(15, 3, 15);
-    let state = get_state(&dt);
+    let state = get_state(dt);
     assert_eq!(state.troop.name(), "闇朱の獣牙兵団");
     assert_eq!(state.next_troop.name(), "紫炎の鉄機兵団");
 
