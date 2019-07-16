@@ -1,7 +1,7 @@
 use chrono::Local;
 use std::process;
 
-use dq10tools::eternal_darkness::enemy;
+use dq10tools::eternal_darkness as enemy;
 
 fn main() {
     match enemy::get_levels(Local::now()) {

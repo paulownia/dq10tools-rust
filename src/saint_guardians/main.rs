@@ -1,10 +1,10 @@
 use chrono::{Local};
 use std::process;
 
-use dq10tools::saint_guardians::enemy::*;
+use dq10tools::saint_guardians as enemy;
 
 fn main() {
-    match get_enemy_levels(Local::now()) {
+    match enemy::get_levels(Local::now()) {
         Some(json) => println!("{}", json.to_string()),
         None => process::exit(1),
     }
