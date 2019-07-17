@@ -23,10 +23,14 @@ pub fn get_levels(now: DateTime<Local>) -> Option<Value> {
     Some(json)
 }
 
-#[test]
-fn test_get_level() {
-    let e = get_levels(Local.ymd(2019, 7, 5).and_hms(12, 0, 0)).unwrap();
-    assert_eq!(e.get("レギルラッゾたち").unwrap(), 1);
-    assert_eq!(e.get("スコルパイド").unwrap(), 3);
-    assert_eq!(e.get("ジェルザーク").unwrap(), 2);
+#[cfg(test)]
+mod tests {
+    use chrono::prelude::*;
+    #[test]
+    fn test_get_level() {
+        let e = super::get_levels(Local.ymd(2019, 7, 5).and_hms(12, 0, 0)).unwrap();
+        assert_eq!(e.get("レギルラッゾたち").unwrap(), 1);
+        assert_eq!(e.get("スコルパイド").unwrap(), 3);
+        assert_eq!(e.get("ジェルザーク").unwrap(), 2);
+    }
 }
