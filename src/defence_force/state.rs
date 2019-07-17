@@ -46,7 +46,33 @@ mod tests {
     fn test_get_state() {
         let dt = chrono::Local.ymd(2018, 9, 20).and_hms(15, 3, 15);
         let state = super::get_state(dt);
-        assert_eq!(state.troop.name(), "闇朱の獣牙兵団");
-        assert_eq!(state.next_troop.name(), "紫炎の鉄機兵団");
+        assert!(state.troop.name().contains("朱"));
+        assert!(state.next_troop.name().contains("紫"));
+        assert_eq!(state.next_in, 57);
+    }
+
+    #[test]
+    fn test_get_state2() {
+        let dt = chrono::Local.ymd(2018, 9, 18).and_hms(23, 0, 0);
+        let state = super::get_state(dt);
+        assert!(state.troop.name().contains("銀"));
+        assert!(state.next_troop.name().contains("碧"));
+        assert_eq!(state.next_in, 60);
+    }
+    #[test]
+    fn test_get_state3() {
+        let dt = chrono::Local.ymd(2018, 9, 19).and_hms(23, 0, 0);
+        let state = super::get_state(dt);
+        assert!(state.troop.name().contains("銀"));
+        assert!(state.next_troop.name().contains("ランダム"));
+        assert_eq!(state.next_in, 60);
+    }
+    #[test]
+    fn test_get_state4() {
+        let dt = chrono::Local.ymd(2018, 9, 22).and_hms(23, 3, 45);
+        let state = super::get_state(dt);
+        assert!(state.troop.name().contains("朱"));
+        assert!(state.next_troop.name().contains("紫"));
+        assert_eq!(state.next_in, 57);
     }
 }
