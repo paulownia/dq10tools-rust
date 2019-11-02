@@ -5,10 +5,6 @@ authors = ["hisanori <hisary@gmail.com>"]
 edition = "2018"
 
 [[bin]]
-name = "holy-war-in-the-eternal-darkness"
-path = "src/eternal_darkness/main.rs"
-
-[[bin]]
 name = "record-of-the-saint-guardians-war"
 path = "src/saint_guardians/main.rs"
 
