@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, Datelike, Timelike};
+use chrono::{DateTime, Local, TimeZone};
 
 #[derive(Eq, PartialEq)]
 pub struct Troop(&'static str, u32);
@@ -21,22 +21,33 @@ const MACHINE: Troop = Troop("紫炎の鉄機兵団", 35);
 const GOLEM:   Troop = Troop("深碧の造魔兵団", 32);
 const ZONBIE:  Troop = Troop("蒼怨の屍獄兵団", 34);
 const INSECT:  Troop = Troop("銀甲の凶蟲兵団", 33);
-const RANDOM:  Troop = Troop("ランダム", 1);
+const MARINE:  Troop = Troop("翠煙の海妖兵団", 36);
+const ALL:     Troop = Troop("全兵団", 1);
 
-// サイクル、日曜日の0時スタートでサイクルを定義、1時間毎の敵を記述
-const CYCLE: [&Troop; 7] = [
+// 2019/10/24 0時からの周期
+const CYCLE: [&Troop; 9] = [
+    &BEAST,
     &MACHINE,
-    &INSECT,
+    &MARINE,
+    &ALL,
     &GOLEM,
     &ZONBIE,
     &INSECT,
-    &RANDOM,
-    &BEAST
+    &MARINE,
+    &ALL
 ];
 
+pub fn get_base_point() -> DateTime<Local> {
+    Local.ymd(2019, 10, 24).and_hms(0, 0, 0)
+}
 
-pub fn calc_period(dt: DateTime<Local>) -> usize {
-    (dt.weekday().num_days_from_sunday() * 24 + dt.hour()) as usize
+pub fn calc_period(dt: DateTime<Local>) -> Result<usize, &'static str> {
+    let base_point = get_base_point();
+    if dt < base_point {
+        return Err("no data before 2019/10/24");
+    }
+    let idx = (dt - base_point).num_hours() as usize;
+    Ok(idx)
 }
 
 pub fn get_troop_by_period(p: usize) -> &'static Troop {

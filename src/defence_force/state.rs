@@ -8,12 +8,18 @@ pub struct State {
     pub changed_at: chrono::DateTime<Local>
 }
 
-pub fn get_current_state() -> State {
+pub fn get_current_state() -> Option<State> {
     get_state(Local::now())
 }
 
-pub fn get_state(dt: DateTime<Local>) -> State {
+pub fn get_state(dt: DateTime<Local>) -> Option<State> {
     let period = calc_period(dt);
+
+    if period.is_err() {
+        return None;
+    }
+
+    let period = period.unwrap();
 
     let mut next_in = 60 - dt.minute();
 
@@ -26,12 +32,12 @@ pub fn get_state(dt: DateTime<Local>) -> State {
 
     let changed_at = dt.clone() + Duration::minutes(next_in as i64);
 
-    State {
+    Some(State {
         troop: get_troop_by_period(period),
         next_troop: get_troop_by_period(next_period),
         next_in: next_in,
         changed_at: changed_at
-    }
+    })
 }
 
 fn is_same_troop(p1: usize, p2: usize) -> bool {
@@ -46,33 +52,16 @@ mod tests {
     fn test_get_state() {
         let dt = chrono::Local.ymd(2018, 9, 20).and_hms(15, 3, 15);
         let state = super::get_state(dt);
-        assert!(state.troop.name().contains("朱"));
-        assert!(state.next_troop.name().contains("紫"));
-        assert_eq!(state.next_in, 57);
+        assert!(state.is_none());
     }
 
     #[test]
     fn test_get_state2() {
-        let dt = chrono::Local.ymd(2018, 9, 18).and_hms(23, 0, 0);
+        let dt = chrono::Local.ymd(2019, 11, 2).and_hms(23, 0, 0);
         let state = super::get_state(dt);
-        assert!(state.troop.name().contains("銀"));
-        assert!(state.next_troop.name().contains("碧"));
+        let state = state.unwrap();
+        assert!(state.troop.name().contains("蒼"));
+        assert!(state.next_troop.name().contains("銀"));
         assert_eq!(state.next_in, 60);
-    }
-    #[test]
-    fn test_get_state3() {
-        let dt = chrono::Local.ymd(2018, 9, 19).and_hms(23, 0, 0);
-        let state = super::get_state(dt);
-        assert!(state.troop.name().contains("銀"));
-        assert!(state.next_troop.name().contains("ランダム"));
-        assert_eq!(state.next_in, 60);
-    }
-    #[test]
-    fn test_get_state4() {
-        let dt = chrono::Local.ymd(2018, 9, 22).and_hms(23, 3, 45);
-        let state = super::get_state(dt);
-        assert!(state.troop.name().contains("朱"));
-        assert!(state.next_troop.name().contains("紫"));
-        assert_eq!(state.next_in, 57);
     }
 }

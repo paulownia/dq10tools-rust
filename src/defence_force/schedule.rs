@@ -6,14 +6,20 @@ pub struct Event {
     pub troop: &'static Troop
 }
 
-pub fn get_current_schedule() -> Vec<Event> {
+pub fn get_current_schedule() -> Option<Vec<Event>> {
     get_schedule(Local::now())
 }
 
-pub fn get_schedule(dt: DateTime<Local>) -> Vec<Event> {
+pub fn get_schedule(dt: DateTime<Local>) -> Option<Vec<Event>> {
     let mut vec: Vec<Event> = Vec::with_capacity(24);
 
     let period = calc_period(dt);
+
+    if period.is_err() {
+        return None;
+    }
+
+    let period = period.unwrap();
 
     let dt = Local.ymd(dt.year(), dt.month(), dt.day()).and_hms(dt.hour(), 0, 0);
 
@@ -40,7 +46,7 @@ pub fn get_schedule(dt: DateTime<Local>) -> Vec<Event> {
         })
     }
 
-    vec
+    Some(vec)
 }
 
 #[cfg(test)]
@@ -50,12 +56,19 @@ mod tests {
     fn test_get_schedule() {
         let dt = chrono::Local.ymd(2018, 9, 22).and_hms(23, 45, 10);
         let schedule = super::get_schedule(dt);
+        assert!(schedule.is_none());
+    }
+    #[test]
+    fn test_get_schedule2() {
+        let dt = chrono::Local.ymd(2019, 11, 3).and_hms(23, 45, 10);
+        let schedule = super::get_schedule(dt);
+        let schedule = schedule.unwrap();
         assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].started_at.year(), 2018);
-        assert_eq!(schedule[0].started_at.month(), 9);
-        assert_eq!(schedule[0].started_at.day(), 22);
+        assert_eq!(schedule[0].started_at.year(), 2019);
+        assert_eq!(schedule[0].started_at.month(), 11);
+        assert_eq!(schedule[0].started_at.day(), 3);
         assert_eq!(schedule[0].started_at.hour(), 23);
-        assert_eq!(schedule[0].troop.name(), "闇朱の獣牙兵団");
+        assert_eq!(schedule[0].troop.name(), "翠煙の海妖兵団");
     }
 }
 
