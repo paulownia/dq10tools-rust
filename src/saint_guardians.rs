@@ -17,7 +17,8 @@ pub fn get_levels(now: DateTime<Local>) -> Option<Value> {
     let json = json!({
         "レギルラッゾたち": d0,
         "スコルパイド": d2,
-        "ジェルザーク": d1
+        "ジェルザーク": d1,
+        "ガルドドン": d1
     });
 
     Some(json)
@@ -32,5 +33,6 @@ mod tests {
         assert_eq!(e.get("レギルラッゾたち").unwrap(), 1);
         assert_eq!(e.get("スコルパイド").unwrap(), 3);
         assert_eq!(e.get("ジェルザーク").unwrap(), 2);
+        assert_eq!(e.get("ガルドドン").unwrap(), 2);
     }
 }
