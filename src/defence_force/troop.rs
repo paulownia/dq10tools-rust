@@ -22,23 +22,25 @@ const GOLEM:   Troop = Troop("深碧の造魔兵団", 32);
 const ZONBIE:  Troop = Troop("蒼怨の屍獄兵団", 34);
 const INSECT:  Troop = Troop("銀甲の凶蟲兵団", 33);
 const MARINE:  Troop = Troop("翠煙の海妖兵団", 36);
+const DRAGON:  Troop = Troop("灰塵の竜鱗兵団", 37);
 const ALL:     Troop = Troop("全兵団", 1);
 
-// 2019/10/24 0時からの周期
-const CYCLE: [&Troop; 9] = [
+// 2020/6/3 0時からの周期
+const CYCLE: [&Troop; 10] = [
+    &MARINE,
+    &DRAGON,
+    &ALL,
     &BEAST,
     &MACHINE,
-    &MARINE,
-    &ALL,
     &GOLEM,
+    &DRAGON,
+    &ALL,
     &ZONBIE,
-    &INSECT,
-    &MARINE,
-    &ALL
+    &INSECT
 ];
 
 pub fn get_base_point() -> DateTime<Local> {
-    Local.ymd(2019, 10, 24).and_hms(0, 0, 0)
+    Local.ymd(2020, 6, 3).and_hms(0, 0, 0)
 }
 
 pub fn calc_period(dt: DateTime<Local>) -> Result<usize, &'static str> {
