@@ -60,14 +60,14 @@ mod tests {
     }
     #[test]
     fn test_get_schedule2() {
-        let dt = chrono::Local.ymd(2019, 11, 3).and_hms(23, 45, 10);
+        let dt = chrono::Local.ymd(2020, 6, 4).and_hms(6, 45, 10);
         let schedule = super::get_schedule(dt);
         let schedule = schedule.unwrap();
         assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].started_at.year(), 2019);
-        assert_eq!(schedule[0].started_at.month(), 11);
-        assert_eq!(schedule[0].started_at.day(), 3);
-        assert_eq!(schedule[0].started_at.hour(), 23);
+        assert_eq!(schedule[0].started_at.year(), 2020);
+        assert_eq!(schedule[0].started_at.month(), 6);
+        assert_eq!(schedule[0].started_at.day(), 4);
+        assert_eq!(schedule[0].started_at.hour(), 6);
         assert_eq!(schedule[0].troop.name(), "翠煙の海妖兵団");
     }
 }
