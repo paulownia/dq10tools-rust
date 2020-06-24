@@ -14,11 +14,11 @@ path = "src/ast_main.rs"
 
 [[bin]]
 name = "defence-force"
-path = "src/defence_force/main1.rs"
+path = "src/defence_force_main.rs"
 
 [[bin]]
 name = "defence-force-schedule"
-path = "src/defence_force/main2.rs"
+path = "src/defence_force_schedule_main.rs"
 
 [dependencies]
 serde_json = "1.0"
