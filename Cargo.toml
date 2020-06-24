@@ -6,11 +6,11 @@ edition = "2018"
 
 [[bin]]
 name = "record-of-the-saint-guardians-war"
-path = "src/saint_guardians/main.rs"
+path = "src/saint_guardians_main.rs"
 
 [[bin]]
 name = "astoltia-standard-time"
-path = "src/ast/main.rs"
+path = "src/ast_main.rs"
 
 [[bin]]
 name = "defence-force"
