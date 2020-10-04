@@ -6,7 +6,7 @@ edition = "2018"
 
 [[bin]]
 name = "record-of-the-saint-guardians-war"
-path = "src/saint_guardians_main.rs"
+path = "src/main/record_of_the_saint_guardians_war.rs"
 
 [[bin]]
 name = "astoltia-standard-time"
