@@ -10,7 +10,7 @@ path = "src/saint_guardians_main.rs"
 
 [[bin]]
 name = "astoltia-standard-time"
-path = "src/ast_main.rs"
+path = "src/main/astoltia_standard_time.rs"
 
 [[bin]]
 name = "defence-force"
