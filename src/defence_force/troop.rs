@@ -5,8 +5,7 @@ pub struct Troop(&'static str, u32);
 
 impl Troop {
     pub fn colorized_name(&self) -> String {
-        let s = format!("[{}m{}[0m", self.color(), self.name());
-        return s;
+        format!("[{}m{}[0m", self.color(), self.name())
     }
     pub fn name(&self) -> &'static str {
         self.0
