@@ -33,7 +33,15 @@ mod tests {
         let e = super::get_levels(Local.ymd(2019, 7, 5).and_hms(12, 0, 0)).unwrap();
         assert_eq!(e.get("レギルラッゾたち").unwrap(), 1);
         assert_eq!(e.get("スコルパイド").unwrap(), 3);
+        assert_eq!(e.get("デルメゼ").unwrap(), 3);
         assert_eq!(e.get("ジェルザーク").unwrap(), 2);
         assert_eq!(e.get("ガルドドン").unwrap(), 2);
+
+        let e = super::get_levels(Local.ymd(2020, 11, 18).and_hms(6, 0, 0)).unwrap();
+        assert_eq!(e.get("レギルラッゾたち").unwrap(), 2);
+        assert_eq!(e.get("スコルパイド").unwrap(), 1);
+        assert_eq!(e.get("デルメゼ").unwrap(), 1);
+        assert_eq!(e.get("ジェルザーク").unwrap(), 3);
+        assert_eq!(e.get("ガルドドン").unwrap(), 3);
     }
 }
