@@ -57,11 +57,11 @@ mod tests {
 
     #[test]
     fn test_get_state2() {
-        let dt = chrono::Local.ymd(2020, 6, 4).and_hms(23, 0, 0);
+        let dt = chrono::Local.ymd(2020, 12, 23).and_hms(14, 0, 0);
         let state = super::get_state(dt);
         let state = state.unwrap();
         assert!(state.troop.name().contains("全"));
-        assert!(state.next_troop.name().contains("屍"));
+        assert!(state.next_troop.name().contains("海"));
         assert_eq!(state.next_in, 60);
     }
 }
