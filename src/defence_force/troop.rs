@@ -1,29 +1,48 @@
 use chrono::{DateTime, Local, TimeZone};
 
-#[derive(Eq, PartialEq)]
-pub struct Troop(&'static str, u32);
+pub trait Troop {
+    fn colorized_name(&self) -> String;
 
-impl Troop {
-    pub fn colorized_name(&self) -> String {
-        format!("[{}m{}[0m", self.color(), self.name())
+    fn name(&self) -> &'static str;
+}
+
+pub struct SingleColored(&'static str, u32);
+
+pub struct RainbowColored(&'static str);
+
+impl Troop for SingleColored {
+    fn colorized_name(&self) -> String {
+        format!("[{}m{}[0m", self.1, self.0)
     }
-    pub fn name(&self) -> &'static str {
+    fn name(&self) -> &'static str {
         self.0
     }
-    pub fn color(&self) -> u32 {
-        self.1
+}
+impl Troop for RainbowColored {
+    fn colorized_name(&self) -> String {
+        self.0.chars().enumerate().fold(String::new(), |res, (i, ch)| {
+            res + &format!("[{}m{}[0m", (i + 6) % 7 + 31, ch)
+        })
+    }
+    fn name(&self) -> &'static str {
+        self.0
+    }
+}
+impl PartialEq for Troop {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name()
     }
 }
 
-const BEAST:   Troop = Troop("闇朱の獣牙兵団", 31);
-const MACHINE: Troop = Troop("紫炎の鉄機兵団", 35);
-const GOLEM:   Troop = Troop("深碧の造魔兵団", 32);
-const ZONBIE:  Troop = Troop("蒼怨の屍獄兵団", 34);
-const INSECT:  Troop = Troop("銀甲の凶蟲兵団", 33);
-const MARINE:  Troop = Troop("翠煙の海妖兵団", 36);
-const DRAGON:  Troop = Troop("灰塵の竜鱗兵団", 37);
-const SLIME:   Troop = Troop("彩虹の粘塊兵団", 0);
-const ALL:     Troop = Troop("全兵団", 1);
+const BEAST:   SingleColored = SingleColored("闇朱の獣牙兵団", 31);
+const MACHINE: SingleColored = SingleColored("紫炎の鉄機兵団", 35);
+const GOLEM:   SingleColored = SingleColored("深碧の造魔兵団", 32);
+const ZONBIE:  SingleColored = SingleColored("蒼怨の屍獄兵団", 34);
+const INSECT:  SingleColored = SingleColored("銀甲の凶蟲兵団", 33);
+const MARINE:  SingleColored = SingleColored("翠煙の海妖兵団", 36);
+const DRAGON:  SingleColored = SingleColored("灰塵の竜鱗兵団", 37);
+const SLIME:   RainbowColored = RainbowColored("彩虹の粘塊兵団");
+const ALL:     SingleColored = SingleColored("全兵団", 1);
 
 // 2020/12/23 6時からの周期
 const CYCLE: [&Troop; 13] = [
