@@ -6,9 +6,14 @@ pub trait Troop {
     fn name(&self) -> &'static str;
 }
 
-pub struct SingleColored(&'static str, u32);
+impl PartialEq for Troop {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name()
+    }
+}
 
-pub struct RainbowColored(&'static str);
+#[derive(PartialEq, Eq)]
+struct SingleColored(&'static str, u32);
 
 impl Troop for SingleColored {
     fn colorized_name(&self) -> String {
@@ -18,6 +23,10 @@ impl Troop for SingleColored {
         self.0
     }
 }
+
+#[derive(PartialEq, Eq)]
+struct RainbowColored(&'static str);
+
 impl Troop for RainbowColored {
     fn colorized_name(&self) -> String {
         self.0.chars().enumerate().fold(String::new(), |res, (i, ch)| {
@@ -26,11 +35,6 @@ impl Troop for RainbowColored {
     }
     fn name(&self) -> &'static str {
         self.0
-    }
-}
-impl PartialEq for Troop {
-    fn eq(&self, other: &Self) -> bool {
-        self.name() == other.name()
     }
 }
 
@@ -77,4 +81,22 @@ pub fn calc_period(dt: DateTime<Local>) -> Result<usize, String> {
 pub fn get_troop_by_period(p: usize) -> &'static Troop {
     let index = p % CYCLE.len();
     CYCLE[index]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_eq() {
+        let marine: &Troop = &MARINE;
+        let slime: &Troop = &SLIME;
+        let dragon: &Troop = &DRAGON;
+
+        assert!(marine == marine);
+        assert!(dragon == dragon);
+        assert!(slime == slime);
+        assert!(marine != slime);
+        assert!(slime != dragon);
+        assert!(dragon != marine);
+    }
 }
