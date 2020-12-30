@@ -41,7 +41,7 @@ impl Troop for RainbowColored {
 const BEAST:   SingleColored = SingleColored("闇朱の獣牙兵団", 31);
 const MACHINE: SingleColored = SingleColored("紫炎の鉄機兵団", 35);
 const GOLEM:   SingleColored = SingleColored("深碧の造魔兵団", 32);
-const ZONBIE:  SingleColored = SingleColored("蒼怨の屍獄兵団", 34);
+const ZOMBIE:  SingleColored = SingleColored("蒼怨の屍獄兵団", 34);
 const INSECT:  SingleColored = SingleColored("銀甲の凶蟲兵団", 33);
 const MARINE:  SingleColored = SingleColored("翠煙の海妖兵団", 36);
 const DRAGON:  SingleColored = SingleColored("灰塵の竜鱗兵団", 37);
@@ -55,7 +55,7 @@ const CYCLE: [&Troop; 13] = [
     &SLIME,
     &ALL,
     &GOLEM,
-    &ZONBIE,
+    &ZOMBIE,
     &INSECT,
     &SLIME,
     &ALL,
