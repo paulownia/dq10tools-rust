@@ -6,7 +6,7 @@ pub trait Troop {
     fn name(&self) -> &'static str;
 }
 
-impl PartialEq for Troop {
+impl PartialEq for dyn Troop {
     fn eq(&self, other: &Self) -> bool {
         self.name() == other.name()
     }
@@ -49,7 +49,7 @@ const SLIME:   RainbowColored = RainbowColored("彩虹の粘塊兵団");
 const ALL:     SingleColored = SingleColored("全兵団", 1);
 
 // 2020/12/23 6時からの周期
-const CYCLE: [&Troop; 13] = [
+const CYCLE: [& dyn Troop; 13] = [
     &BEAST,
     &MACHINE,
     &SLIME,
@@ -78,7 +78,7 @@ pub fn calc_period(dt: DateTime<Local>) -> Result<usize, String> {
     Ok(idx)
 }
 
-pub fn get_troop_by_period(p: usize) -> &'static Troop {
+pub fn get_troop_by_period(p: usize) -> &'static dyn Troop {
     let index = p % CYCLE.len();
     CYCLE[index]
 }
@@ -88,9 +88,9 @@ mod tests {
     use super::*;
     #[test]
     fn test_eq() {
-        let marine: &Troop = &MARINE;
-        let slime: &Troop = &SLIME;
-        let dragon: &Troop = &DRAGON;
+        let marine: & dyn Troop = &MARINE;
+        let slime: & dyn Troop = &SLIME;
+        let dragon: & dyn Troop = &DRAGON;
 
         assert!(marine == marine);
         assert!(dragon == dragon);
