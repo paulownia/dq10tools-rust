@@ -99,4 +99,20 @@ mod tests {
         assert!(slime != dragon);
         assert!(dragon != marine);
     }
+
+    #[test]
+    fn test_eq2() {
+        let a: & dyn Troop = &SingleColored("a", 1);
+        let b: & dyn Troop = &SingleColored("a", 2);
+        let c: & dyn Troop = &SingleColored("a", 3);
+
+        // PartialEq
+        assert!(a == b);
+        assert!(b == c);
+        assert!(c == a);
+        assert!(b == a);
+
+        // Eq
+        assert!(a == a);
+    }
 }
