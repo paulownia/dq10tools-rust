@@ -13,40 +13,45 @@ impl PartialEq for dyn Troop {
 }
 
 #[derive(PartialEq, Eq)]
-struct SingleColored(&'static str, u32);
+struct SingleColored {
+    name: &'static str,
+    color_code: u32
+}
 
 impl Troop for SingleColored {
     fn colorized_name(&self) -> String {
-        format!("[{}m{}[0m", self.1, self.0)
+        format!("[{}m{}[0m", self.color_code, self.name)
     }
     fn name(&self) -> &'static str {
-        self.0
+        self.name
     }
 }
 
 #[derive(PartialEq, Eq)]
-struct RainbowColored(&'static str);
+struct RainbowColored{
+    name: &'static str
+}
 
 impl Troop for RainbowColored {
     fn colorized_name(&self) -> String {
-        self.0.chars().enumerate().fold(String::new(), |res, (i, ch)| {
+        self.name.chars().enumerate().fold(String::new(), |res, (i, ch)| {
             res + &format!("[{}m{}[0m", (i + 6) % 7 + 31, ch)
         })
     }
     fn name(&self) -> &'static str {
-        self.0
+        self.name
     }
 }
 
-const BEAST:   SingleColored = SingleColored("闇朱の獣牙兵団", 31);
-const MACHINE: SingleColored = SingleColored("紫炎の鉄機兵団", 35);
-const GOLEM:   SingleColored = SingleColored("深碧の造魔兵団", 32);
-const ZOMBIE:  SingleColored = SingleColored("蒼怨の屍獄兵団", 34);
-const INSECT:  SingleColored = SingleColored("銀甲の凶蟲兵団", 33);
-const MARINE:  SingleColored = SingleColored("翠煙の海妖兵団", 36);
-const DRAGON:  SingleColored = SingleColored("灰塵の竜鱗兵団", 37);
-const SLIME:   RainbowColored = RainbowColored("彩虹の粘塊兵団");
-const ALL:     SingleColored = SingleColored("全兵団", 1);
+const BEAST:   SingleColored = SingleColored{ name: "闇朱の獣牙兵団", color_code: 31 };
+const MACHINE: SingleColored = SingleColored{ name: "紫炎の鉄機兵団", color_code: 35 };
+const GOLEM:   SingleColored = SingleColored{ name: "深碧の造魔兵団", color_code: 32 };
+const ZOMBIE:  SingleColored = SingleColored{ name: "蒼怨の屍獄兵団", color_code: 34 };
+const INSECT:  SingleColored = SingleColored{ name: "銀甲の凶蟲兵団", color_code: 33 };
+const MARINE:  SingleColored = SingleColored{ name: "翠煙の海妖兵団", color_code: 36 };
+const DRAGON:  SingleColored = SingleColored{ name: "灰塵の竜鱗兵団", color_code: 37 };
+const SLIME:   RainbowColored = RainbowColored{ name:"彩虹の粘塊兵団" };
+const ALL:     SingleColored = SingleColored{ name: "全兵団", color_code: 1 };
 
 // 2020/12/23 6時からの周期
 const CYCLE: [& dyn Troop; 13] = [
@@ -102,9 +107,9 @@ mod tests {
 
     #[test]
     fn test_eq2() {
-        let a: & dyn Troop = &SingleColored("a", 1);
-        let b: & dyn Troop = &SingleColored("a", 2);
-        let c: & dyn Troop = &SingleColored("a", 3);
+        let a: & dyn Troop = &SingleColored{ name: "a", color_code: 1 };
+        let b: & dyn Troop = &SingleColored{ name: "a", color_code: 2 };
+        let c: & dyn Troop = &SingleColored{ name: "a", color_code: 3 };
 
         // PartialEq
         assert!(a == b);
