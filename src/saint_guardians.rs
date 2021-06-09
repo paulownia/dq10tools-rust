@@ -19,7 +19,8 @@ pub fn get_levels(now: DateTime<Local>) -> Option<Value> {
         "スコルパイド": d2,
         "ジェルザーク": d1,
         "ガルドドン": d1,
-        "デルメゼ": d2
+        "デルメゼ": d2,
+        "バラシュナ": d0
     });
 
     Some(json)
