@@ -35,4 +35,16 @@ pub fn get_base_point() -> DateTime<Local> {
 
 #[cfg(test)]
 mod tests {
+    use chrono::prelude::*;
+
+    #[test]
+    fn test_get_boss() {
+        let dt = chrono::Local.ymd(2021, 12, 19).and_hms(5, 59, 59);
+        let boss = super::get_boss(dt);
+        assert_eq!(boss.name, "源世鳥アルマナ");
+
+        let dt = chrono::Local.ymd(2021, 12, 19).and_hms(6, 0, 0);
+        let boss = super::get_boss(dt);
+        assert_eq!(boss.name, "じげんりゅう");
+    }
 }
