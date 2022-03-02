@@ -46,5 +46,9 @@ mod tests {
         let dt = chrono::Local.ymd(2021, 12, 19).and_hms(6, 0, 0);
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "じげんりゅう");
+
+        let dt = chrono::Local.ymd(2022, 3, 2).and_hms(6, 0, 0);
+        let boss = super::get_boss(dt);
+        assert_eq!(boss.name, "堕天使エルギオス");
     }
 }
