@@ -24,6 +24,11 @@ path = "src/main/defence_force_schedule.rs"
 name = "panigarm"
 path = "src/main/panigarm.rs"
 
+[[bin]]
+name = "sinners-in-the-abyss"
+path = "src/main/sinners_in_the_abyss.rs"
+
+
 [dependencies]
 serde_json = "1.0"
 chrono = "0.4"
