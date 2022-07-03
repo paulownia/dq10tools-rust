@@ -74,8 +74,8 @@ mod tests {
         let jst = chrono::FixedOffset::east(9 * 3600).ymd(2018, 6, 1).and_hms(7, 3, 15);
         let utc = chrono::DateTime::<Utc>::from_utc(jst.naive_utc(), Utc);
         let ast = super::from_utc(utc);
-        assert_eq!(ast.hour(), 0);
-        assert_eq!(ast.minute(), 0);
+        assert_eq!(ast.hour(), 21);
+        assert_eq!(ast.minute(), 5);
     }
     #[test]
     fn test_from_utc2() {
