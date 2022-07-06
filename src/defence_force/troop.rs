@@ -64,27 +64,31 @@ const MARINE:  SingleColored = SingleColored::new("翠煙の海妖兵団", 36);
 const DRAGON:  SingleColored = SingleColored::new("灰塵の竜鱗兵団", 37);
 const SLIME:   RainbowColored = RainbowColored::new("彩虹の粘塊兵団");
 const FLOWER:  SingleColored = SingleColored::new("芳墨の華烈兵団", 7);
+const BIRD:    SingleColored = SingleColored::new("白雲の冥翼軍団", 0);
 const ALL:     SingleColored = SingleColored::new("全兵団", 1);
 
-// 2021/11/12 6時からの周期
-const CYCLE: [& dyn Troop; 13] = [
-    &FLOWER,
-    &ALL,
+// 2022-07-06 6時からの周期
+const CYCLE: [& dyn Troop; 15] = [
+    &BEAST,
+    &MACHINE,
     &GOLEM,
+    &BIRD,
+    &ALL,
     &ZOMBIE,
     &INSECT,
-    &ALL,
     &MARINE,
+    &BIRD,
+    &ALL,
     &DRAGON,
     &SLIME,
     &FLOWER,
+    &BIRD,
     &ALL,
-    &BEAST,
-    &MACHINE,
 ];
 
 pub fn get_base_point() -> DateTime<Local> {
-    Local.ymd(2021, 11, 12).and_hms(6, 0, 0)
+    // 2022-07-06 11時からの周期
+    Local.ymd(2021, 7, 6).and_hms(6, 0, 0)
 }
 
 pub fn calc_period(dt: DateTime<Local>) -> Result<usize, String> {

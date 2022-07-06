@@ -5,10 +5,6 @@ authors = ["hisanori <hisary@gmail.com>"]
 edition = "2018"
 
 [[bin]]
-name = "record-of-the-saint-guardians-war"
-path = "src/main/record_of_the_saint_guardians_war.rs"
-
-[[bin]]
 name = "astoltia-standard-time"
 path = "src/main/astoltia_standard_time.rs"
 
