@@ -9,10 +9,12 @@ const DRAGON: Boss = Boss { name: "じげんりゅう" };
 const CATCHER: Boss = Boss { name: "パニガキャッチャー" };
 const FRUITS: Boss = Boss { name: "源世果フルポティ" };
 const CORVUS: Boss = Boss { name: "堕天使エルギオス" };
+const PRISON: Boss = Boss { name: "源世妃フォルダイナ" };
 
 
-const SEQUENCE: [&Boss; 5] = [
+const SEQUENCE: [&Boss; 6] = [
     &DRAGON,
+    &PRISON,
     &CATCHER,
     &FRUITS,
     &CORVUS,
@@ -32,9 +34,9 @@ pub fn get_boss(dt: DateTime<Local>) -> &'static Boss {
 }
 
 pub fn get_base_point() -> DateTime<Local> {
-    // 2022-07-03 6時からの周期
-    // バージョンアップ週（7/3 -）はじげんりゅう、翌週（7/10 - ）からパニガキャッチャーが差し込まれ、それ以外の順番は変化なしという前提
-    Local.ymd(2022, 7, 3).and_hms(6, 0, 0)
+    // バージョン6.3 2022-10-19 6時からの周期
+    // バージョンアップ週（10/16 -）はじげんりゅう、翌週（10/23 - ）からフォルダイナ
+    Local.ymd(2022, 10, 16).and_hms(6, 0, 0)
 }
 
 
@@ -44,15 +46,15 @@ mod tests {
 
     #[test]
     fn test_get_boss() {
-        let dt = chrono::Local.ymd(2022, 7, 10).and_hms(5, 59, 59);
+        let dt = chrono::Local.ymd(2022, 10, 23).and_hms(5, 59, 59);
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "じげんりゅう");
 
-        let dt = chrono::Local.ymd(2022, 7, 10).and_hms(6, 0, 0);
+        let dt = chrono::Local.ymd(2022, 10, 23).and_hms(6, 0, 0);
         let boss = super::get_boss(dt);
-        assert_eq!(boss.name, "パニガキャッチャー");
+        assert_eq!(boss.name, "源世妃フォルダイナ");
 
-        let dt = chrono::Local.ymd(2022, 7, 24).and_hms(6, 0, 0);
+        let dt = chrono::Local.ymd(2022, 11, 13).and_hms(6, 0, 0);
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "堕天使エルギオス");
     }
