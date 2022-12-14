@@ -11,9 +11,11 @@ pub fn get_levels(now: DateTime<Local>) -> Option<Value> {
     let d = (now - base_point).num_days();
 
     let d0 = d % 2 + 1;
+    let d1 = (d + 1) % 2 + 1;
 
     let json = json!({
-        "厭悪のルベランギス": d0
+        "厭悪のルベランギス": d0,
+        "絶念のアウルモッド": d1
     });
 
     return Some(json)
