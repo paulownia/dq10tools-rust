@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveTime, Datelike, TimeZone, Timelike, Utc, FixedOffset, Local};
+use chrono::{DateTime, NaiveTime, NaiveDateTime, Datelike, TimeZone, Timelike, Utc, FixedOffset};
 
 pub struct Next {
     pub state: char,
@@ -6,29 +6,29 @@ pub struct Next {
 }
 
 pub fn now() -> NaiveTime {
-    from_utc(Utc::now())
+    from_datetime(Utc::now()).unwrap()
 }
 
-pub fn from_epoch(epoch: i64) -> NaiveTime {
-    from_utc(Utc.timestamp(epoch, 0))
+
+pub fn from_timestamp(sec_from_epoch: i64) -> Option<NaiveTime> {
+    NaiveDateTime::from_timestamp_opt(sec_from_epoch, 0).and_then(|u| from_naive_utc(u))
 }
 
-pub fn from_utc(utc: DateTime<Utc>) ->NaiveTime {
-    let offset = FixedOffset::east(9 * 3600);
-    let jst = DateTime::<FixedOffset>::from_utc(utc.naive_utc(), offset);
-    let jst0h = offset.ymd(jst.year(), jst.month(), jst.day()).and_hms(0, 0, 0);
 
-    let duration = jst - jst0h;
-    let ast = jst0h + duration * 20;
-    ast.time()
+pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<NaiveTime> {
+    from_naive_utc(dt.naive_utc())
 }
 
-#[deprecated(since="6.1.2", note="please use `from_utc` instead")]
-pub fn convert(jst: DateTime<Local>) -> NaiveTime {
-    let jst0h = Local.ymd(jst.year(), jst.month(), jst.day()).and_hms(0, 0, 0);
-    let duration = jst - jst0h;
-    let ast = jst0h + duration * 20;
-    ast.time()
+
+fn from_naive_utc(nt: NaiveDateTime) -> Option<NaiveTime> {
+    FixedOffset::east_opt(9 * 3600).and_then(|offset| {
+        let jst = offset.from_utc_datetime(&nt);
+        offset.with_ymd_and_hms(jst.year(), jst.month(), jst.day(), 0, 0, 0).single().map(|jst0h| {
+            let duration = jst - jst0h;
+            let ast = jst0h + duration * 20;
+            ast.time()
+        })
+    })
 }
 
 pub fn calc_minutes_to_next(t: NaiveTime) -> Next {
@@ -48,114 +48,120 @@ pub fn calc_minutes_to_next(t: NaiveTime) -> Next {
 #[cfg(test)]
 mod tests {
     use chrono::prelude::*;
+    use chrono_tz;
     #[test]
-    fn test_convert1() {
-        let dt = chrono::Local.ymd(2018, 5, 31).and_hms(7, 3, 15);
-        let ast = super::convert(dt);
+    fn test_from_datetime_local1() {
+        let dt = chrono::Local.with_ymd_and_hms(2018, 5, 31, 7, 3, 15).single().unwrap();
+        let ast = super::from_datetime(dt).unwrap();
         assert_eq!(ast.hour(), 21);
         assert_eq!(ast.minute(), 5);
     }
     #[test]
-    fn test_convert2() {
-        let dt = chrono::Local.ymd(2018, 6, 1).and_hms(0, 0, 0);
-        let ast = super::convert(dt);
+    fn test_from_datetime_local2() {
+        let dt = chrono::Local.with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
+        let ast = super::from_datetime(dt).unwrap();
         assert_eq!(ast.hour(), 0);
         assert_eq!(ast.minute(), 0);
     }
     #[test]
-    fn test_convert3() {
-        let dt = chrono::Local.ymd(2018, 6, 13).and_hms(10, 22, 30);
-        let ast = super::convert(dt);
+    fn test_from_datetime_local3() {
+        let dt = chrono::Local.with_ymd_and_hms(2018, 6, 13, 10, 22, 30).single().unwrap();
+        let ast = super::from_datetime(dt).unwrap();
         assert_eq!(ast.hour(), 15);
         assert_eq!(ast.minute(), 30);
     }
     #[test]
-    fn test_from_utc1() {
-        let jst = chrono::FixedOffset::east(9 * 3600).ymd(2018, 6, 1).and_hms(7, 3, 15);
-        let utc = chrono::DateTime::<Utc>::from_utc(jst.naive_utc(), Utc);
-        let ast = super::from_utc(utc);
+    fn test_from_datetime_jst1() {
+        let jst = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 1, 7, 3, 15).single().unwrap();
+        let ast = super::from_datetime(jst).unwrap();
         assert_eq!(ast.hour(), 21);
         assert_eq!(ast.minute(), 5);
     }
     #[test]
-    fn test_from_utc2() {
-        let jst = chrono::FixedOffset::east(9 * 3600).ymd(2018, 6, 1).and_hms(0, 0, 0);
-        let utc = chrono::DateTime::<Utc>::from_utc(jst.naive_utc(), Utc);
-        let ast = super::from_utc(utc);
+    fn test_from_datetime_jst2() {
+        let jst = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
+        let ast = super::from_datetime(jst).unwrap();
         assert_eq!(ast.hour(), 0);
         assert_eq!(ast.minute(), 0);
     }
     #[test]
-    fn test_from_utc3() {
-        let utc = chrono::Utc.ymd(2018, 6, 13).and_hms(1, 22, 30);
-        let ast = super::from_utc(utc);
+    fn test_from_datetime_sst1() {
+        let sst = chrono_tz::Asia::Singapore.with_ymd_and_hms(2018, 5, 30, 23, 0, 0).single().unwrap();
+        let ast = super::from_datetime(sst).unwrap();
+        assert_eq!(ast.hour(), 0);
+        assert_eq!(ast.minute(), 0);
+    }
+    #[test]
+    fn test_from_datetime_utc1() {
+        let utc = chrono::Utc.with_ymd_and_hms(2018, 6, 13, 1, 22, 30).single().unwrap();
+        let ast = super::from_datetime(utc).unwrap();
         assert_eq!(ast.hour(), 15);
         assert_eq!(ast.minute(), 30);
     }
     #[test]
     fn test_calc_minutes_to_next0() {
-        let t = chrono::NaiveTime::from_hms_milli(6, 0, 1, 0);
+        let t = chrono::NaiveTime::from_hms_milli_opt(6, 0, 1, 0).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '夜');
         assert_eq!(s.after_minutes, 36);
     }
     #[test]
     fn test_calc_minutes_to_next1() {
-        let t = chrono::NaiveTime::from_hms_milli(12, 45, 30, 0);
+        let t = chrono::NaiveTime::from_hms_milli_opt(12, 45, 30, 0).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '夜');
         assert_eq!(s.after_minutes, 16);
     }
     #[test]
     fn test_calc_minutes_to_next2() {
-        let t = chrono::NaiveTime::from_hms_milli(5, 45, 30, 1);
+        let t = chrono::NaiveTime::from_hms_milli_opt(5, 45, 30, 1).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '朝');
         assert_eq!(s.after_minutes, 1);
     }
     #[test]
     fn test_calc_minutes_to_next3() {
-        let t = chrono::NaiveTime::from_hms_milli(23, 45, 30, 1);
+        let t = chrono::NaiveTime::from_hms_milli_opt(23, 45, 30, 1).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '朝');
         assert_eq!(s.after_minutes, 19);
     }
     #[test]
     fn test_calc_minutes_to_next4() {
-        let t = chrono::NaiveTime::from_hms_milli(0, 0, 0, 0);
+        let t = chrono::NaiveTime::from_hms_milli_opt(0, 0, 0, 0).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '朝');
         assert_eq!(s.after_minutes, 18);
     }
     #[test]
     fn test_calc_minutes_to_next5() {
-        let t = chrono::NaiveTime::from_hms_milli(6, 0, 0, 0);
+        let t = chrono::NaiveTime::from_hms_milli_opt(6, 0, 0, 0).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '夜');
         assert_eq!(s.after_minutes, 36);
     }
     #[test]
     fn test_calc_minutes_to_next6() {
-        let t = chrono::NaiveTime::from_hms_milli(18, 0, 0, 0);
+        let t = chrono::NaiveTime::from_hms_milli_opt(18, 0, 0, 0).unwrap();
         let s = super::calc_minutes_to_next(t);
         assert_eq!(s.state, '朝');
         assert_eq!(s.after_minutes, 36);
     }
     #[test]
-    fn test_from_epoch() {
+    fn test_from_timestamp() {
         let epoch:i64 = 1656735654; // 2022/07/02 13:20:54
-        let ast = super::from_epoch(epoch);
+        let ast = super::from_timestamp(epoch).unwrap();
         assert_eq!(ast.hour(), 2);
         assert_eq!(ast.minute(), 58);
     }
     #[test]
-    fn test_same_from_epoch_and_now() {
+    fn test_same_from_timestamp_and_now() {
         let utc = chrono::Utc::now();
         // ミリ秒を含めない含めない時刻に変換
-        let utc = chrono::Utc.ymd(utc.year(), utc.month(), utc.day()).and_hms(utc.hour(), utc.minute(), utc.second());
-        let epoch = utc.timestamp() as i64;
-        let ast1 = super::from_epoch(epoch);
-        let ast2 = super::from_utc(utc);
+        let utc = chrono::Utc.with_ymd_and_hms(utc.year(), utc.month(), utc.day(), utc.hour(), utc.minute(), utc.second()).single().unwrap();
+        let epoch = utc.timestamp();
+        let ast1 = super::from_timestamp(epoch).unwrap();
+        let ast2 = super::from_datetime(utc).unwrap();
         assert_eq!(ast1, ast2)
     }
 }
