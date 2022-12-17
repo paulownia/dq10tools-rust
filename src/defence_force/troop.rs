@@ -88,7 +88,7 @@ const CYCLE: [& dyn Troop; 15] = [
 
 pub fn get_base_point() -> DateTime<Local> {
     // 2022-07-06 11時からの周期
-    Local.ymd(2021, 7, 6).and_hms(6, 0, 0)
+    Local.with_ymd_and_hms(2021, 7, 6, 6, 0, 0).unwrap()
 }
 
 pub fn calc_period(dt: DateTime<Local>) -> Result<usize, String> {

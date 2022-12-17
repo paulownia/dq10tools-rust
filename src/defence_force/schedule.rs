@@ -21,32 +21,33 @@ pub fn get_schedule(dt: DateTime<Local>) -> Option<Vec<Event>> {
 
     let period = period.unwrap();
 
-    let dt = Local.ymd(dt.year(), dt.month(), dt.day()).and_hms(dt.hour(), 0, 0);
-
-    let troop = get_troop_by_period(period);
-
-    vec.push(Event{
-        started_at: dt,
-        troop: troop
-    });
-
-    for i in 1..24 {
-        let troop = get_troop_by_period(period + i);
-        let prev_troop = get_troop_by_period(period + i - 1);
-
-        if troop == prev_troop {
-            continue;
-        }
-
-        let duration = Duration::hours(i as i64);
+    let dt_opt = Local.with_ymd_and_hms(dt.year(), dt.month(), dt.day(), dt.hour(), 0, 0).single();
+    dt_opt.map( |dt| {
+        let troop = get_troop_by_period(period);
 
         vec.push(Event{
-            started_at: dt + duration,
+            started_at: dt,
             troop: troop
-        })
-    }
+        });
 
-    Some(vec)
+        for i in 1..24 {
+            let troop = get_troop_by_period(period + i);
+            let prev_troop = get_troop_by_period(period + i - 1);
+
+            if troop == prev_troop {
+                continue;
+            }
+
+            let duration = Duration::hours(i as i64);
+
+            vec.push(Event{
+                started_at: dt + duration,
+                troop: troop
+            })
+        }
+
+        vec
+    })
 }
 
 #[cfg(test)]
@@ -54,13 +55,13 @@ mod tests {
     use chrono::prelude::*;
     #[test]
     fn test_get_schedule() {
-        let dt = chrono::Local.ymd(2018, 9, 22).and_hms(23, 45, 10);
+        let dt = chrono::Local.with_ymd_and_hms(2018, 9, 22, 23, 45, 10).single().unwrap();
         let schedule = super::get_schedule(dt);
         assert!(schedule.is_none());
     }
     #[test]
     fn test_get_schedule2() {
-        let dt = chrono::Local.ymd(2022, 7, 6).and_hms(14, 45, 10);
+        let dt = chrono::Local.with_ymd_and_hms(2022, 7, 6, 14, 45, 10).single().unwrap();
         let schedule = super::get_schedule(dt);
         let schedule = schedule.unwrap();
         assert_eq!(schedule.len(), 24);

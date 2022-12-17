@@ -50,14 +50,14 @@ mod tests {
 
     #[test]
     fn test_get_state() {
-        let dt = chrono::Local.ymd(2018, 9, 20).and_hms(15, 3, 15);
+        let dt = chrono::Local.with_ymd_and_hms(2018, 9, 20, 15, 3, 15).single().unwrap();
         let state = super::get_state(dt);
         assert!(state.is_none());
     }
 
     #[test]
     fn test_get_state2() {
-        let dt = chrono::Local.ymd(2022, 7, 6).and_hms(11, 0, 0);
+        let dt = chrono::Local.with_ymd_and_hms(2022, 7, 6, 11, 0, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
         assert!(state.troop.name().contains("蒼怨"));

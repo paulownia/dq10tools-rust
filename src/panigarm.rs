@@ -36,7 +36,7 @@ pub fn get_boss(dt: DateTime<Local>) -> &'static Boss {
 pub fn get_base_point() -> DateTime<Local> {
     // バージョン6.3 2022-10-19 6時からの周期
     // バージョンアップ週（10/16 -）はじげんりゅう、翌週（10/23 - ）からフォルダイナ
-    Local.ymd(2022, 10, 16).and_hms(6, 0, 0)
+    Local.with_ymd_and_hms(2022, 10, 16, 6, 0, 0).single().unwrap()
 }
 
 
@@ -46,15 +46,15 @@ mod tests {
 
     #[test]
     fn test_get_boss() {
-        let dt = chrono::Local.ymd(2022, 10, 23).and_hms(5, 59, 59);
+        let dt = chrono::Local.with_ymd_and_hms(2022, 10, 23, 5, 59, 59).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "じげんりゅう");
 
-        let dt = chrono::Local.ymd(2022, 10, 23).and_hms(6, 0, 0);
+        let dt = chrono::Local.with_ymd_and_hms(2022, 10, 23, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "源世妃フォルダイナ");
 
-        let dt = chrono::Local.ymd(2022, 11, 13).and_hms(6, 0, 0);
+        let dt = chrono::Local.with_ymd_and_hms(2022, 11, 13, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "堕天使エルギオス");
     }
