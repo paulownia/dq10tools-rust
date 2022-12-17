@@ -1,6 +1,6 @@
 [package]
 name = "dq10tools"
-version = "6.3.1"
+version = "6.3.2"
 authors = ["hisanori <hisary@gmail.com>"]
 edition = "2018"
 
