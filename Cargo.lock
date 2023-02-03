@@ -134,7 +134,7 @@ dependencies = [
 
 [[package]]
 name = "dq10tools"
-version = "6.3.2"
+version = "6.4.0"
 dependencies = [
  "chrono",
  "chrono-tz",
