@@ -49,7 +49,7 @@ mod tests {
     use chrono::prelude::*;
 
     #[test]
-    fn test_get_state() {
+    fn test_get_state_is_none_before_basepoint() {
         let dt = chrono::Local.with_ymd_and_hms(2018, 9, 20, 15, 3, 15).single().unwrap();
         let state = super::get_state(dt);
         assert!(state.is_none());
@@ -57,11 +57,11 @@ mod tests {
 
     #[test]
     fn test_get_state2() {
-        let dt = chrono::Local.with_ymd_and_hms(2022, 7, 6, 11, 0, 0).single().unwrap();
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
-        assert!(state.troop.name().contains("蒼怨"));
-        assert!(state.next_troop.name().contains("凶蟲"));
-        assert_eq!(state.next_in, 60);
+        assert!(state.troop.name().contains("樹葬"));
+        assert!(state.next_troop.name().contains("全兵団"));
+        assert_eq!(state.next_in, 56);
     }
 }

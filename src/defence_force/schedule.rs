@@ -54,22 +54,36 @@ pub fn get_schedule(dt: DateTime<Local>) -> Option<Vec<Event>> {
 mod tests {
     use chrono::prelude::*;
     #[test]
-    fn test_get_schedule() {
+    fn test_get_schedule_none_before_basepoint() {
         let dt = chrono::Local.with_ymd_and_hms(2018, 9, 22, 23, 45, 10).single().unwrap();
         let schedule = super::get_schedule(dt);
         assert!(schedule.is_none());
     }
     #[test]
     fn test_get_schedule2() {
-        let dt = chrono::Local.with_ymd_and_hms(2022, 7, 6, 14, 45, 10).single().unwrap();
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 5, 14, 45, 10).single().unwrap();
         let schedule = super::get_schedule(dt);
         let schedule = schedule.unwrap();
         assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].started_at.year(), 2022);
-        assert_eq!(schedule[0].started_at.month(), 7);
-        assert_eq!(schedule[0].started_at.day(), 6);
+        assert_eq!(schedule[0].started_at.year(), 2023);
+        assert_eq!(schedule[0].started_at.month(), 2);
+        assert_eq!(schedule[0].started_at.day(), 5);
         assert_eq!(schedule[0].started_at.hour(), 14);
-        assert_eq!(schedule[0].troop.name(), "白雲の冥翼軍団");
+        assert_eq!(schedule[0].troop.name(), "灰塵の竜鱗兵団");
+        assert_eq!(schedule[1].troop.name(), "全兵団");
+    }
+    #[test]
+    fn test_get_schedule3() {
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 7, 12, 10, 34).single().unwrap();
+        let schedule = super::get_schedule(dt);
+        let schedule = schedule.unwrap();
+        assert_eq!(schedule.len(), 24);
+        assert_eq!(schedule[0].started_at.year(), 2023);
+        assert_eq!(schedule[0].started_at.month(), 2);
+        assert_eq!(schedule[0].started_at.day(), 7);
+        assert_eq!(schedule[0].started_at.hour(), 12);
+        assert_eq!(schedule[0].troop.name(), "灰塵の竜鱗兵団");
+        assert_eq!(schedule[1].troop.name(), "腐緑の樹葬兵団");
     }
 }
 
