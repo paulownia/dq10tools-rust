@@ -1,5 +1,5 @@
 use crate::defence_force::troop::*;
-use chrono::{DateTime, Local, Duration, Timelike};
+use chrono::{DateTime, Local, Duration, Timelike, TimeZone};
 
 pub struct State {
     pub troop: &'static dyn Troop,
@@ -12,31 +12,25 @@ pub fn get_current_state() -> Option<State> {
     get_state(Local::now())
 }
 
-pub fn get_state(dt: DateTime<Local>) -> Option<State> {
-    let period = calc_period(dt);
+pub fn get_state<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<State> {
+    calc_period(&dt).ok().map( |period| {
+        let mut next_in = 60 - dt.naive_utc().minute();
 
-    if period.is_err() {
-        return None;
-    }
+        let mut next_period = period + 1;
 
-    let period = period.unwrap();
+        while is_same_troop(period, next_period) {
+            next_period += 1;
+            next_in += 60;
+        }
 
-    let mut next_in = 60 - dt.minute();
+        let changed_at = dt.clone() + Duration::minutes(next_in as i64);
 
-    let mut next_period = period + 1;
-
-    while is_same_troop(period, next_period) {
-        next_period += 1;
-        next_in += 60;
-    }
-
-    let changed_at = dt.clone() + Duration::minutes(next_in as i64);
-
-    Some(State {
-        troop: get_troop_by_period(period),
-        next_troop: get_troop_by_period(next_period),
-        next_in: next_in,
-        changed_at: changed_at
+        State {
+            troop: get_troop_by_period(period),
+            next_troop: get_troop_by_period(next_period),
+            next_in: next_in,
+            changed_at: changed_at.with_timezone(&Local)
+        }
     })
 }
 
@@ -47,6 +41,7 @@ fn is_same_troop(p1: usize, p2: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use chrono::prelude::*;
+    use chrono_tz;
 
     #[test]
     fn test_get_state_is_none_before_basepoint() {
@@ -56,8 +51,17 @@ mod tests {
     }
 
     #[test]
-    fn test_get_state2() {
-        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
+    fn test_get_state_jst() {
+        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
+        let state = super::get_state(dt);
+        let state = state.unwrap();
+        assert!(state.troop.name().contains("樹葬"));
+        assert!(state.next_troop.name().contains("全兵団"));
+        assert_eq!(state.next_in, 56);
+    }
+    #[test]
+    fn test_get_state_east0900() {
+        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
         assert!(state.troop.name().contains("樹葬"));
