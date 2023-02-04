@@ -34,6 +34,27 @@ impl Troop for SingleColored {
 }
 
 #[derive(PartialEq, Eq)]
+struct Single256Colored {
+    name: &'static str,
+    color_code: u32
+}
+
+impl Single256Colored {
+    const fn new(name: &'static str, color_code: u32) -> Self {
+        Self{ name, color_code }
+    }
+}
+
+impl Troop for Single256Colored {
+    fn colorized_name(&self) -> String {
+        format!("[38;5;{}m{}[0m", self.color_code, self.name)
+    }
+    fn name(&self) -> &'static str {
+        self.name
+    }
+}
+
+#[derive(PartialEq, Eq)]
 struct RainbowColored {
     name: &'static str
 }
@@ -63,9 +84,9 @@ const INSECT:  SingleColored = SingleColored::new("銀甲の凶蟲兵団", 33);
 const MARINE:  SingleColored = SingleColored::new("翠煙の海妖兵団", 36);
 const DRAGON:  SingleColored = SingleColored::new("灰塵の竜鱗兵団", 37);
 const SLIME:   RainbowColored = RainbowColored::new("彩虹の粘塊兵団");
-const FLOWER:  SingleColored = SingleColored::new("芳墨の華烈兵団", 7);
+const FLOWER:  Single256Colored = Single256Colored::new("芳墨の華烈兵団", 88);
 const BIRD:    SingleColored = SingleColored::new("白雲の冥翼軍団", 0);
-const WOOD:    SingleColored = SingleColored::new("腐緑の樹葬兵団", 32);
+const WOOD:    Single256Colored = Single256Colored::new("腐緑の樹葬兵団", 100);
 const ALL:     SingleColored = SingleColored::new("全兵団", 1);
 
 // 2023-02-01 6時からの周期
