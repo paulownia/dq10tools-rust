@@ -1,26 +1,67 @@
 use chrono::{DateTime, NaiveTime, NaiveDateTime, Datelike, TimeZone, Timelike, Utc, FixedOffset};
 
-pub struct Next {
-    pub state: char,
-    pub after_minutes: u32,
+
+pub struct AST(NaiveTime);
+
+impl AST {
+    pub fn state(&self) -> State {
+        let h = self.0.hour();
+        if 6 <= h && h < 18 {
+            State::Day
+        } else {
+            State::Night
+        }
+    }
+    pub fn state_change_in(&self) -> u32 {
+        let t = self.0;
+        let h = self.0.hour();
+        let dh = (29 - h) % 12 + 1;
+        ((dh * 3600 - t.minute() * 60 - t.second()) as f64 / 1200.0).round() as u32
+    }
+    pub fn time(&self) -> NaiveTime {
+        self.0
+    }
 }
 
-pub fn now() -> NaiveTime {
+pub enum State {
+    Day,
+    Night,
+}
+
+impl State {
+    pub fn change(&self) -> State {
+        match self {
+            State::Day => State::Night,
+            State::Night => State::Day,
+        }
+    }
+}
+
+impl std::fmt::Display for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            State::Day => write!(f, "{}", "朝"),
+            State::Night => write!(f, "{}", "夜"),
+        }
+   }
+}
+
+pub fn now() -> AST {
     from_datetime(Utc::now()).unwrap()
 }
 
 
-pub fn from_timestamp(sec_from_epoch: i64) -> Option<NaiveTime> {
+pub fn from_timestamp(sec_from_epoch: i64) -> Option<AST> {
     NaiveDateTime::from_timestamp_opt(sec_from_epoch, 0).and_then(|u| from_naive_utc(u))
 }
 
 
-pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<NaiveTime> {
+pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<AST> {
     from_naive_utc(dt.naive_utc())
 }
 
 
-fn from_naive_utc(nt: NaiveDateTime) -> Option<NaiveTime> {
+fn from_naive_utc(nt: NaiveDateTime) -> Option<AST> {
     FixedOffset::east_opt(9 * 3600).and_then(|offset| {
         let jst = offset.from_utc_datetime(&nt);
         offset.with_ymd_and_hms(jst.year(), jst.month(), jst.day(), 0, 0, 0).single().map(|jst0h| {
@@ -28,20 +69,7 @@ fn from_naive_utc(nt: NaiveDateTime) -> Option<NaiveTime> {
             let ast = jst0h + duration * 20;
             ast.time()
         })
-    })
-}
-
-pub fn calc_minutes_to_next(t: NaiveTime) -> Next {
-    let h = t.hour();
-    let next = if 6 <= h && h < 18 { '夜' } else { '朝' };
-
-    let dh = (29 - h) % 12 + 1;
-    let minutes = ((dh * 3600 - t.minute() * 60 - t.second()) as f64 / 1200.0).round() as u32;
-
-    Next {
-        state: next,
-        after_minutes: minutes,
-    }
+    }).map( |naive_time| AST(naive_time) )
 }
 
 
