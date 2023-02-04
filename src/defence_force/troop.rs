@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeZone};
+use chrono::{DateTime, TimeZone, Utc, NaiveDateTime};
 
 pub trait Troop {
     fn colorized_name(&self) -> String;
@@ -124,17 +124,18 @@ const CYCLE: [& dyn Troop; 31] = [
     &FLOWER,
 ];
 
-pub fn get_base_point() -> DateTime<Local> {
-    // 2023-02-01 6時からの周期
-    Local.with_ymd_and_hms(2023, 2, 1, 6, 0, 0).unwrap()
+pub fn get_base_point() -> NaiveDateTime {
+    // JSTの2023-02-01 6時からの周期
+    Utc.with_ymd_and_hms(2023, 1, 31, 21, 0, 0).unwrap().naive_utc()
 }
 
-pub fn calc_period(dt: DateTime<Local>) -> Result<usize, String> {
+pub fn calc_period<Tz: TimeZone>(dt: &DateTime<Tz>) -> Result<usize, String> {
     let base_point = get_base_point();
-    if dt < base_point {
+    let start_time = dt.naive_utc();
+    if start_time < base_point {
         return Err(format!("no data before {}", base_point.format("%F %T")));
     }
-    let idx = (dt - base_point).num_hours() as usize;
+    let idx = (start_time - base_point).num_hours() as usize;
     Ok(idx)
 }
 
