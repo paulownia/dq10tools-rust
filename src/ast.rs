@@ -1,6 +1,6 @@
 use chrono::{DateTime, NaiveTime, NaiveDateTime, Datelike, TimeZone, Timelike, Utc, FixedOffset};
 
-
+#[derive(PartialEq, Eq, Debug)]
 pub struct AST(NaiveTime);
 
 impl AST {
@@ -23,6 +23,7 @@ impl AST {
     }
 }
 
+#[derive(PartialEq, Eq, Debug)]
 pub enum State {
     Day,
     Night,
@@ -81,106 +82,106 @@ mod tests {
     fn test_from_datetime_jst1() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 5, 31, 7, 3, 15).single().unwrap();
         let ast = super::from_datetime(dt).unwrap();
-        assert_eq!(ast.hour(), 21);
-        assert_eq!(ast.minute(), 5);
+        assert_eq!(ast.time().hour(), 21);
+        assert_eq!(ast.time().minute(), 5);
     }
     #[test]
     fn test_from_datetime_jst2() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
         let ast = super::from_datetime(dt).unwrap();
-        assert_eq!(ast.hour(), 0);
-        assert_eq!(ast.minute(), 0);
+        assert_eq!(ast.time().hour(), 0);
+        assert_eq!(ast.time().minute(), 0);
     }
     #[test]
     fn test_from_datetime_jst3() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 13, 10, 22, 30).single().unwrap();
         let ast = super::from_datetime(dt).unwrap();
-        assert_eq!(ast.hour(), 15);
-        assert_eq!(ast.minute(), 30);
+        assert_eq!(ast.time().hour(), 15);
+        assert_eq!(ast.time().minute(), 30);
     }
     #[test]
     fn test_from_datetime_jst4() {
         let jst = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 1, 7, 3, 15).single().unwrap();
         let ast = super::from_datetime(jst).unwrap();
-        assert_eq!(ast.hour(), 21);
-        assert_eq!(ast.minute(), 5);
+        assert_eq!(ast.time().hour(), 21);
+        assert_eq!(ast.time().minute(), 5);
     }
     #[test]
     fn test_from_datetime_jst5() {
         let jst = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
         let ast = super::from_datetime(jst).unwrap();
-        assert_eq!(ast.hour(), 0);
-        assert_eq!(ast.minute(), 0);
+        assert_eq!(ast.time().hour(), 0);
+        assert_eq!(ast.time().minute(), 0);
     }
     #[test]
     fn test_from_datetime_sst1() {
         let sst = chrono_tz::Asia::Singapore.with_ymd_and_hms(2018, 5, 30, 23, 0, 0).single().unwrap();
         let ast = super::from_datetime(sst).unwrap();
-        assert_eq!(ast.hour(), 0);
-        assert_eq!(ast.minute(), 0);
+        assert_eq!(ast.time().hour(), 0);
+        assert_eq!(ast.time().minute(), 0);
     }
     #[test]
     fn test_from_datetime_utc1() {
         let utc = chrono::Utc.with_ymd_and_hms(2018, 6, 13, 1, 22, 30).single().unwrap();
         let ast = super::from_datetime(utc).unwrap();
-        assert_eq!(ast.hour(), 15);
-        assert_eq!(ast.minute(), 30);
+        assert_eq!(ast.time().hour(), 15);
+        assert_eq!(ast.time().minute(), 30);
     }
     #[test]
     fn test_calc_minutes_to_next0() {
         let t = chrono::NaiveTime::from_hms_milli_opt(6, 0, 1, 0).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '夜');
-        assert_eq!(s.after_minutes, 36);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "夜");
+        assert_eq!(s.state_change_in(), 36);
     }
     #[test]
     fn test_calc_minutes_to_next1() {
         let t = chrono::NaiveTime::from_hms_milli_opt(12, 45, 30, 0).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '夜');
-        assert_eq!(s.after_minutes, 16);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "夜");
+        assert_eq!(s.state_change_in(), 16);
     }
     #[test]
     fn test_calc_minutes_to_next2() {
         let t = chrono::NaiveTime::from_hms_milli_opt(5, 45, 30, 1).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '朝');
-        assert_eq!(s.after_minutes, 1);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "朝");
+        assert_eq!(s.state_change_in(), 1);
     }
     #[test]
     fn test_calc_minutes_to_next3() {
         let t = chrono::NaiveTime::from_hms_milli_opt(23, 45, 30, 1).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '朝');
-        assert_eq!(s.after_minutes, 19);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "朝");
+        assert_eq!(s.state_change_in(), 19);
     }
     #[test]
     fn test_calc_minutes_to_next4() {
         let t = chrono::NaiveTime::from_hms_milli_opt(0, 0, 0, 0).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '朝');
-        assert_eq!(s.after_minutes, 18);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "朝");
+        assert_eq!(s.state_change_in(), 18);
     }
     #[test]
     fn test_calc_minutes_to_next5() {
         let t = chrono::NaiveTime::from_hms_milli_opt(6, 0, 0, 0).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '夜');
-        assert_eq!(s.after_minutes, 36);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "夜");
+        assert_eq!(s.state_change_in(), 36);
     }
     #[test]
     fn test_calc_minutes_to_next6() {
         let t = chrono::NaiveTime::from_hms_milli_opt(18, 0, 0, 0).unwrap();
-        let s = super::calc_minutes_to_next(t);
-        assert_eq!(s.state, '朝');
-        assert_eq!(s.after_minutes, 36);
+        let s = super::AST(t);
+        assert_eq!(s.state().change().to_string(), "朝");
+        assert_eq!(s.state_change_in(), 36);
     }
     #[test]
     fn test_from_timestamp() {
         let epoch:i64 = 1656735654; // 2022/07/02 13:20:54
         let ast = super::from_timestamp(epoch).unwrap();
-        assert_eq!(ast.hour(), 2);
-        assert_eq!(ast.minute(), 58);
+        assert_eq!(ast.time().hour(), 2);
+        assert_eq!(ast.time().minute(), 58);
     }
     #[test]
     fn test_same_from_timestamp_and_utc_now() {
