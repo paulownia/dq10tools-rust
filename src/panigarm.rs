@@ -10,15 +10,18 @@ const CATCHER: Boss = Boss { name: "パニガキャッチャー" };
 const FRUITS: Boss = Boss { name: "源世果フルポティ" };
 const CORVUS: Boss = Boss { name: "堕天使エルギオス" };
 const PRISON: Boss = Boss { name: "源世妃フォルダイナ" };
+const STAR: Boss = Boss { name: "魔妖星プルタヌス" };
 
 
-const SEQUENCE: [&Boss; 6] = [
+// 2023-01-29 6:00から（6.4は2/1から）
+const SEQUENCE: [&Boss; 7] = [
+    &FRUITS,
+    &STAR,
+    &CORVUS,
+    &ALMANA,
     &DRAGON,
     &PRISON,
     &CATCHER,
-    &FRUITS,
-    &CORVUS,
-    &ALMANA,
 ];
 
 pub fn get_current_boss() -> &'static Boss {
@@ -34,9 +37,7 @@ pub fn get_boss(dt: DateTime<Local>) -> &'static Boss {
 }
 
 pub fn get_base_point() -> DateTime<Local> {
-    // バージョン6.3 2022-10-19 6時からの周期
-    // バージョンアップ週（10/16 -）はじげんりゅう、翌週（10/23 - ）からフォルダイナ
-    Local.with_ymd_and_hms(2022, 10, 16, 6, 0, 0).single().unwrap()
+    Local.with_ymd_and_hms(2023, 1, 29, 6, 0, 0).single().unwrap()
 }
 
 
@@ -46,15 +47,15 @@ mod tests {
 
     #[test]
     fn test_get_boss() {
-        let dt = chrono::Local.with_ymd_and_hms(2022, 10, 23, 5, 59, 59).single().unwrap();
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 5, 5, 59, 59).single().unwrap();
         let boss = super::get_boss(dt);
-        assert_eq!(boss.name, "じげんりゅう");
+        assert_eq!(boss.name, "源世果フルポティ");
 
-        let dt = chrono::Local.with_ymd_and_hms(2022, 10, 23, 6, 0, 0).single().unwrap();
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 5, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
-        assert_eq!(boss.name, "源世妃フォルダイナ");
+        assert_eq!(boss.name, "魔妖星プルタヌス");
 
-        let dt = chrono::Local.with_ymd_and_hms(2022, 11, 13, 6, 0, 0).single().unwrap();
+        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 13, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "堕天使エルギオス");
     }
