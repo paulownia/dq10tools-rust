@@ -7,10 +7,18 @@ pub struct Event {
 }
 
 pub fn get_current_schedule() -> Option<Vec<Event>> {
-    get_schedule(Local::now())
+    get_schedule_in(Local::now(), 24)
+}
+
+pub fn get_current_schedule_in(count: usize) -> Option<Vec<Event>> {
+    get_schedule_in(Local::now(), count)
 }
 
 pub fn get_schedule<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<Vec<Event>> {
+    get_schedule_in(dt, 24)
+}
+
+pub fn get_schedule_in<Tz: TimeZone>(dt: DateTime<Tz>, count: usize) -> Option<Vec<Event>> {
     calc_period(&dt).ok().and_then( |period| {
         let utc = dt.naive_utc();
 
@@ -24,7 +32,7 @@ pub fn get_schedule<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<Vec<Event>> {
                 troop: troop
             });
 
-            for i in 1..24 {
+            for i in 1..count {
                 let troop = get_troop_by_period(period + i);
                 let prev_troop = get_troop_by_period(period + i - 1);
 
