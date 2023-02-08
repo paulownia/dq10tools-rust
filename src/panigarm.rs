@@ -49,15 +49,18 @@ mod tests {
 
     #[test]
     fn test_get_boss() {
-        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 5, 5, 59, 59).single().unwrap();
+        let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
+        let dt = tz.with_ymd_and_hms(2023, 2, 5, 5, 59, 59).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "源世果フルポティ");
 
-        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 5, 6, 0, 0).single().unwrap();
+        let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
+        let dt = tz.with_ymd_and_hms(2023, 2, 5, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "魔妖星プルタヌス");
 
-        let dt = chrono::Local.with_ymd_and_hms(2023, 2, 13, 6, 0, 0).single().unwrap();
+        let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
+        let dt = tz.with_ymd_and_hms(2023, 2, 13, 6, 0, 0).single().unwrap();
         let boss = super::get_boss(dt);
         assert_eq!(boss.name, "堕天使エルギオス");
     }
