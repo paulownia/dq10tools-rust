@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeZone};
+use chrono::{DateTime, Local, TimeZone, Utc, NaiveDateTime};
 
 #[derive(PartialEq, Eq)]
 pub struct Boss {
@@ -28,16 +28,18 @@ pub fn get_current_boss() -> &'static Boss {
     get_boss(Local::now())
 }
 
-pub fn get_boss(dt: DateTime<Local>) -> &'static Boss {
+pub fn get_boss<Tz: TimeZone>(dt: DateTime<Tz>) -> &'static Boss {
     let base_point = get_base_point();
-    let duration = dt - base_point;
+    let calc_point = dt.naive_utc();
+    let duration = calc_point - base_point;
     let pass = duration.num_weeks() as usize;
     let index = pass % SEQUENCE.len();
     SEQUENCE[index]
 }
 
-pub fn get_base_point() -> DateTime<Local> {
-    Local.with_ymd_and_hms(2023, 1, 29, 6, 0, 0).single().unwrap()
+fn get_base_point() -> NaiveDateTime {
+    // 2023-01-29 06:00:00 JST
+    Utc.with_ymd_and_hms(2023, 1, 28, 21, 0, 0).unwrap().naive_utc()
 }
 
 
