@@ -56,6 +56,9 @@ pub fn from_timestamp(sec_from_epoch: i64) -> Option<AST> {
     NaiveDateTime::from_timestamp_opt(sec_from_epoch, 0).and_then(|u| from_naive_utc(u))
 }
 
+pub fn from_timestamp_millis(millis_from_epoch: i64) -> Option<AST> {
+    NaiveDateTime::from_timestamp_millis(millis_from_epoch).and_then(|u| from_naive_utc(u))
+}
 
 pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<AST> {
     from_naive_utc(dt.naive_utc())
@@ -204,13 +207,19 @@ mod tests {
         assert_eq!(ast1, ast2)
     }
     #[test]
-    fn test_same_utf_now_and_local_now() {
+    fn test_same_utc_now_and_local_now() {
         let l = chrono::Local::now();
         let l = chrono::Local.with_ymd_and_hms(l.year(), l.month(), l.day(), l.hour(), l.minute(), l.second()).single().unwrap();
         let u = chrono::Utc::now();
         let u = chrono::Utc.with_ymd_and_hms(u.year(), u.month(), u.day(), u.hour(), u.minute(), u.second()).single().unwrap();
         let ast1 = super::from_datetime(l).unwrap();
         let ast2 = super::from_datetime(u).unwrap();
+        assert_eq!(ast1, ast2)
+    }
+    #[test]
+    fn test_same_from_timestamp_and_timestamp_millis() {
+        let ast1 = super::from_timestamp_millis(1678671352000).unwrap();
+        let ast2 = super::from_timestamp(1678671352).unwrap();
         assert_eq!(ast1, ast2)
     }
 }
