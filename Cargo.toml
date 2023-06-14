@@ -1,6 +1,6 @@
 [package]
 name = "dq10tools"
-version = "6.4.4"
+version = "6.5.0"
 authors = ["hisanori <hisary@gmail.com>"]
 edition = "2018"
 
@@ -28,7 +28,5 @@ path = "src/main/sinners_in_the_abyss.rs"
 [dependencies]
 serde_json = "1.0"
 chrono = "0.4"
-structopt = "0.3"
-
-[dev-dependencies]
 chrono-tz = "0.8"
+structopt = "0.3"
