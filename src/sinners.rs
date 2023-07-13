@@ -16,7 +16,8 @@ pub fn get_levels(now: DateTime<Local>) -> Option<Value> {
 
         let json = json!({
             "厭悪のルベランギス": d0,
-            "絶念のアウルモッド": d1
+            "絶念のアウルモッド": d1,
+            "狂禍のフラウソン": d0
         });
 
         return Some(json)
