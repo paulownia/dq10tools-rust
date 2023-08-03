@@ -1,4 +1,4 @@
-use chrono::{DateTime, TimeZone, NaiveDateTime, NaiveTime, Duration};
+use chrono::{DateTime, TimeZone, NaiveDateTime, NaiveTime, Duration, Local};
 use chrono_tz::Asia::Tokyo;
 use serde_json::{json, Value};
 
@@ -24,6 +24,10 @@ fn to_term<Tz: TimeZone>(now: NaiveDateTime, tz: Tz) -> (DateTime<Tz>, DateTime<
     let to_tz = tz.from_utc_datetime(&to);
 
     (from_tz, to_tz)
+}
+
+pub fn get_current_levels() -> Option<Value> {
+    get_levels(Local::now())
 }
 
 pub fn get_levels<Tz : TimeZone>(now: DateTime<Tz>) -> Option<Value> where Tz::Offset: std::fmt::Display {
