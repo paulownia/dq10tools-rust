@@ -51,7 +51,7 @@ pub fn get_levels<Tz : TimeZone>(now: DateTime<Tz>) -> Option<Value> where Tz::O
             "狂禍のフラウソン": d0
         },
         "term": {
-            "from": from.to_rfc3339(),
+            "from": from.format("%Y-%m-%dT%H:%M:%S%:z").to_string(),
             "to": to.to_rfc3339()
         }
     });
