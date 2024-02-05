@@ -18,6 +18,14 @@ pub fn get_schedule<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<Vec<Event>> {
     get_schedule_in(dt, 24)
 }
 
+/// 指定された日時を起点として、防衛軍イベントを24時間分取得する
+/// epoch_millis: i64 - Unix epochからの経過時間(ミリ秒)
+pub fn get_schedule_from_epoch_millis(epoch_millis:i64) -> Option<Vec<Event>> {
+    let result = Utc.timestamp_millis_opt(epoch_millis);
+    let dt = result.single()?;
+    get_schedule(dt)
+}
+
 pub fn get_schedule_in<Tz: TimeZone>(dt: DateTime<Tz>, count: usize) -> Option<Vec<Event>> {
     calc_period(&dt).ok().and_then( |period| {
         let utc = dt.naive_utc();
@@ -109,6 +117,20 @@ mod tests {
     fn test_get_schedule_sst() {
         let dt = chrono_tz::Asia::Singapore.with_ymd_and_hms(2023, 2, 7, 11, 10, 34).single().unwrap();
         let schedule = super::get_schedule(dt).unwrap();
+        assert_eq!(schedule.len(), 24);
+        assert_eq!(schedule[0].troop.name(), "灰塵の竜鱗兵団");
+        assert_eq!(schedule[1].troop.name(), "腐緑の樹葬兵団");
+
+        let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
+        assert_eq!(jst.year(), 2023);
+        assert_eq!(jst.month(), 2);
+        assert_eq!(jst.day(), 7);
+        assert_eq!(jst.hour(), 12);
+    }
+    #[test]
+    fn text_get_schedule_by_epoch() {
+        let epoch = 1675739434000;  // 2023-02-07T03:10:34Z
+        let schedule = super::get_schedule_from_epoch_millis(epoch).unwrap();
         assert_eq!(schedule.len(), 24);
         assert_eq!(schedule[0].troop.name(), "灰塵の竜鱗兵団");
         assert_eq!(schedule[1].troop.name(), "腐緑の樹葬兵団");
