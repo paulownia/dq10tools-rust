@@ -1,4 +1,4 @@
-use chrono::{DateTime, TimeZone, NaiveDateTime, NaiveTime, Duration, Local};
+use chrono::{DateTime, Days, Local, NaiveDateTime, NaiveTime, TimeZone};
 use chrono_tz::Asia::Tokyo;
 use serde_json::{json, Value};
 
@@ -10,12 +10,13 @@ fn to_term<Tz: TimeZone>(now: NaiveDateTime, tz: Tz) -> (DateTime<Tz>, DateTime<
     let boundary_time = NaiveTime::from_hms_opt(21, 0, 0).unwrap();
     let now_time = now.time();
 
+    let delta_one_day = Days::new(1);
     let (from, to) = if now_time > boundary_time {
         let from = now.date().and_hms_opt(21, 0, 0).unwrap();
-        let to  = now.date().and_hms_opt(20, 59, 59).unwrap() + Duration::days(1);
+        let to  = now.date().and_hms_opt(20, 59, 59).unwrap() + delta_one_day;
         (from, to)
     } else {
-        let from = now.date().and_hms_opt(21, 0, 0).unwrap() - Duration::days(1);
+        let from = now.date().and_hms_opt(21, 0, 0).unwrap() - delta_one_day;
         let to  = now.date().and_hms_opt(20, 59, 59).unwrap();
         (from, to)
     };

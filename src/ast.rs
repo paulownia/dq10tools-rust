@@ -53,11 +53,11 @@ pub fn now() -> AST {
 
 
 pub fn from_timestamp(sec_from_epoch: i64) -> Option<AST> {
-    NaiveDateTime::from_timestamp_opt(sec_from_epoch, 0).and_then(|u| from_naive_utc(u))
+    DateTime::from_timestamp(sec_from_epoch, 0).and_then(|u| from_datetime(u))
 }
 
 pub fn from_timestamp_millis(millis_from_epoch: i64) -> Option<AST> {
-    NaiveDateTime::from_timestamp_millis(millis_from_epoch).and_then(|u| from_naive_utc(u))
+    DateTime::from_timestamp_millis(millis_from_epoch).and_then(|u| from_datetime(u))
 }
 
 pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<AST> {
