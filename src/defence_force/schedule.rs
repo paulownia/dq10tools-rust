@@ -1,5 +1,5 @@
 use super::troop::*;
-use chrono::{DateTime, Local, Utc, Duration, Timelike, Datelike, TimeZone};
+use chrono::{DateTime, Datelike, Duration, Local, TimeZone, Timelike, Utc};
 
 pub struct Event {
     pub started_at: DateTime<Local>,
@@ -48,14 +48,16 @@ pub fn get_schedule_in<Tz: TimeZone>(dt: DateTime<Tz>, count: usize) -> Option<V
                     continue;
                 }
 
-                let duration = Duration::hours(i as i64);
-
-                vec.push(Event{
-                    started_at: (started_at + duration).with_timezone(&Local),
-                    troop: troop
-                })
+                match Duration::try_hours(i as i64) {
+                    Some(duration) => {
+                        vec.push(Event{
+                            started_at: (started_at + duration).with_timezone(&Local),
+                            troop: troop
+                        })
+                    },
+                    None => break
+                }
             }
-
             vec
         })
     })

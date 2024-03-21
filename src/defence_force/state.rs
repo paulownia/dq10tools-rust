@@ -13,7 +13,7 @@ pub fn get_current_state() -> Option<State> {
 }
 
 pub fn get_state<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<State> {
-    calc_period(&dt).ok().map( |period| {
+    calc_period(&dt).ok().and_then( |period| {
         let mut next_in = 60 - dt.naive_utc().minute();
 
         let mut next_period = period + 1;
@@ -23,14 +23,16 @@ pub fn get_state<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<State> {
             next_in += 60;
         }
 
-        let changed_at = dt.clone() + Duration::minutes(next_in as i64);
+        let duration = Duration::try_minutes(next_in as i64)?;
 
-        State {
+        let changed_at = dt.clone() + duration;
+
+        Some(State {
             troop: get_troop_by_period(period),
             next_troop: get_troop_by_period(next_period),
             next_in: next_in,
             changed_at: changed_at.with_timezone(&Local)
-        }
+        })
     })
 }
 
