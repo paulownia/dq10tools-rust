@@ -52,20 +52,20 @@ mod tests {
 
     #[test]
     fn test_get_state_jst() {
-        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
+        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2024, 3, 25, 6, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
         assert!(state.troop.name().contains("樹葬"));
-        assert!(state.next_troop.name().contains("全兵団"));
+        assert!(state.next_troop.name().contains("菜果"));
         assert_eq!(state.next_in, 56);
     }
     #[test]
     fn test_get_state_east0900() {
-        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2023, 2, 6, 6, 4, 0).single().unwrap();
+        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2024, 3, 25, 6, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
         assert!(state.troop.name().contains("樹葬"));
-        assert!(state.next_troop.name().contains("全兵団"));
+        assert!(state.next_troop.name().contains("菜果"));
         assert_eq!(state.next_in, 56);
     }
 }
