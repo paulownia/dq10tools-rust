@@ -89,41 +89,45 @@ const BIRD:    SingleColored = SingleColored::new("白雲の冥翼軍団", 0);
 const WOOD:    Single256Colored = Single256Colored::new("腐緑の樹葬兵団", 100);
 const ALL:     SingleColored = SingleColored::new("全兵団", 1);
 const VEGETABLE: Single256Colored = Single256Colored::new("青鮮の菜果兵団", 190);
+const FAT:       Single256Colored = Single256Colored::new("鋼塊の重滅兵団", 103);
 
-// 2023-02-01 6時からの周期
-const CYCLE: [& dyn Troop; 27] = [
-    &BEAST,
-    &ZOMBIE,
-    &DRAGON,
-    &VEGETABLE,
-    &ALL,
+// 2024-10-23 6時からの周期
+const CYCLE: [& dyn Troop; 30] = [
     &BIRD,
     &WOOD,
     &VEGETABLE,
-    &ALL,
-    &MACHINE,
-    &INSECT,
-    &SLIME,
-    &VEGETABLE,
-    &ALL,
-    &BIRD,
-    &WOOD,
-    &VEGETABLE,
+    &FAT,
     &ALL,
     &GOLEM,
     &MARINE,
     &FLOWER,
-    &VEGETABLE,
+    &FAT,
     &ALL,
     &BIRD,
     &WOOD,
     &VEGETABLE,
+    &FAT,
+    &ALL,
+    &BEAST,
+    &ZOMBIE,
+    &DRAGON,
+    &FAT,
+    &ALL,
+    &BIRD,
+    &WOOD,
+    &VEGETABLE,
+    &FAT,
+    &ALL,
+    &MACHINE,
+    &INSECT,
+    &SLIME,
+    &FAT,
     &ALL,
 ];
 
 pub fn get_base_point() -> NaiveDateTime {
-    // JSTの2024-03-21 6時からの周期
-    Utc.with_ymd_and_hms(2024, 3, 20, 21, 0, 0).unwrap().naive_utc()
+    // JSTの2024-10-23 6時 = UTCの2024-10-22 21時
+    Utc.with_ymd_and_hms(2024, 10, 22, 21, 0, 0).unwrap().naive_utc()
 }
 
 pub fn calc_period<Tz: TimeZone>(dt: &DateTime<Tz>) -> Result<usize, String> {
