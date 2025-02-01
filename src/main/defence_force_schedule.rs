@@ -1,16 +1,17 @@
 use dq10tools::defence_force;
 use chrono::{Local, DateTime, TimeZone, NaiveDateTime};
-use structopt::StructOpt;
 use std::process;
+use clap::Parser;
 
-#[derive(StructOpt, Debug)]
-#[structopt(name = "Defence Force Schedule")]
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
 struct Args {
-    #[structopt(short = "d")]
-    dt: Option<String>,
+    /// starting date time of events to be displayed, in the format of "YYYY-MM-DD HH:MM"
+    #[arg(short='d', long)]
+    datetime: Option<String>,
 
-
-    #[structopt(short = "c", default_value="24")]
+    /// number of events to be displayed
+    #[arg(short='c', long, default_value_t=24)]
     count: usize,
 }
 
@@ -25,9 +26,9 @@ fn parse_as_local_datetime(s: &str) -> Result<DateTime<Local>, String>  {
 }
 
 fn main() {
-    let args = Args::from_args();
+    let args = Args::parse();
 
-    let dt: DateTime<Local> = match args.dt {
+    let dt: DateTime<Local> = match args.datetime {
         None => Local::now(),
         Some(dt_str) => match parse_as_local_datetime(&dt_str) {
             Ok(dt) => dt,
