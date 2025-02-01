@@ -31,6 +31,19 @@ pub fn get_current_boss() -> &'static Boss {
     get_boss(Local::now())
 }
 
+pub fn get_next_boss() -> &'static Boss {
+    get_boss(Local::now() + chrono::Duration::days(3))
+}
+
+pub fn get_next_change_time<Tz: TimeZone>(dt: DateTime<Tz>) -> DateTime<Tz> {
+    let base_point = get_base_point();
+    let calc_point = dt.naive_utc();
+    let duration = calc_point - base_point;
+    let pass = (duration.num_days() / 3) as i64;
+    let next = base_point + chrono::Duration::days((pass + 1) * 3);
+    dt.timezone().from_utc_datetime(&next)
+}
+
 pub fn get_boss<Tz: TimeZone>(dt: DateTime<Tz>) -> &'static Boss {
     let base_point = get_base_point();
     let calc_point = dt.naive_utc();
