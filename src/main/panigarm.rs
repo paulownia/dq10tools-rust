@@ -1,13 +1,11 @@
 use dq10tools::panigarm;
 
 fn main() {
-    let boss = panigarm::get_current_boss();
-    let next_boss = panigarm::get_next_boss();
-    let next_change_time = panigarm::get_next_change_time(chrono::Local::now());
+    let cycle = panigarm::get_next_cycle();
 
-    // ボス名称はターミナルで太字表示にする
-    println!("現在のボスは{}です", bold(&boss.name));
-    println!("{}から{}になります", bold(next_change_time.format("%-m月%-d日%-H時").to_string().as_str()), bold(&next_boss.name));
+    for event in cycle {
+        println!("{} {}", event.started_at.format("%m/%d %H:%M"), bold(event.boss.name));
+    }
 }
 
 fn bold(s: &str) -> String {
