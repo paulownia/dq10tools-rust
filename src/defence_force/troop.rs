@@ -89,39 +89,39 @@ const BIRD:    SingleColored = SingleColored::new("白雲の冥翼軍団", 0);
 const WOOD:    Single256Colored = Single256Colored::new("腐緑の樹葬兵団", 100);
 const ALL:     SingleColored = SingleColored::new("全兵団", 1);
 const VEGETABLE: Single256Colored = Single256Colored::new("青鮮の菜果兵団", 190);
-const FAT:       Single256Colored = Single256Colored::new("鋼塊の重滅兵団", 103);
+const STEEL:     Single256Colored = Single256Colored::new("鋼塊の重滅兵団", 103);
 
 // 2024-10-23 6時からの周期
 const CYCLE: [& dyn Troop; 30] = [
     &BIRD,
     &WOOD,
     &VEGETABLE,
-    &FAT,
+    &STEEL,
     &ALL,
     &GOLEM,
     &MARINE,
     &FLOWER,
-    &FAT,
+    &STEEL,
     &ALL,
     &BIRD,
     &WOOD,
     &VEGETABLE,
-    &FAT,
+    &STEEL,
     &ALL,
     &BEAST,
     &ZOMBIE,
     &DRAGON,
-    &FAT,
+    &STEEL,
     &ALL,
     &BIRD,
     &WOOD,
     &VEGETABLE,
-    &FAT,
+    &STEEL,
     &ALL,
     &MACHINE,
     &INSECT,
     &SLIME,
-    &FAT,
+    &STEEL,
     &ALL,
 ];
 
