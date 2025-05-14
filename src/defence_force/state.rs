@@ -54,20 +54,22 @@ mod tests {
 
     #[test]
     fn test_get_state_jst() {
-        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2024, 10, 25, 13, 4, 0).single().unwrap();
+        // 起点から36時間後
+        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2025, 5, 15, 18, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
-        assert!(state.troop.name().contains("鉄機"));
-        assert!(state.next_troop.name().contains("凶蟲"));
+        assert!(state.troop.name().contains("冥翼"));
+        assert!(state.next_troop.name().contains("重滅"));
         assert_eq!(state.next_in, 56);
     }
     #[test]
     fn test_get_state_east0900() {
-        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2024, 10, 25, 23, 4, 0).single().unwrap();
+        // 起点から36時間後
+        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2025, 5, 15, 18, 4, 0).single().unwrap();
         let state = super::get_state(dt);
         let state = state.unwrap();
-        assert!(state.troop.name().contains("造魔"));
-        assert!(state.next_troop.name().contains("海妖"));
+        assert!(state.troop.name().contains("冥翼"));
+        assert!(state.next_troop.name().contains("重滅"));
         assert_eq!(state.next_in, 56);
     }
 }

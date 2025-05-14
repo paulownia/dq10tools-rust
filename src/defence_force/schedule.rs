@@ -73,76 +73,48 @@ mod tests {
         let schedule = super::get_schedule(dt);
         assert!(schedule.is_none());
     }
-    #[test]
-    fn test_get_schedule_east0900() {
-        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2024, 10, 25, 11, 45, 10).single().unwrap();
+
+    /// 周期の一番最初のスケジュールを確認するテスト
+    fn assert_first_time<Tz: TimeZone>(dt: chrono::DateTime<Tz>) {
         let schedule = super::get_schedule(dt).unwrap();
         assert_eq!(schedule.len(), 24);
         assert_eq!(schedule[0].troop.name(), "鋼塊の重滅兵団");
-        assert_eq!(schedule[1].troop.name(), "全兵団");
+        assert_eq!(schedule[1].troop.name(), "金神の遺宝兵団");
 
         let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
-        assert_eq!(jst.year(), 2024);
-        assert_eq!(jst.month(), 10);
-        assert_eq!(jst.day(), 25);
-        assert_eq!(jst.hour(), 11);
+        assert_eq!(jst.year(), 2025);
+        assert_eq!(jst.month(), 5);
+        assert_eq!(jst.day(), 14);
+        assert_eq!(jst.hour(), 6);
+    }
+
+    #[test]
+    fn test_get_schedule_east0900() {
+        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2025, 5, 14, 6, 0, 0).single().unwrap();
+        assert_first_time(dt);
     }
     #[test]
     fn test_get_schedule_jst() {
-        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2024, 10, 25, 11, 10, 34).single().unwrap();
-        let schedule = super::get_schedule(dt).unwrap();
-        assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].troop.name(), "鋼塊の重滅兵団");
-        assert_eq!(schedule[1].troop.name(), "全兵団");
-
-        let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
-        assert_eq!(jst.year(), 2024);
-        assert_eq!(jst.month(), 10);
-        assert_eq!(jst.day(), 25);
-        assert_eq!(jst.hour(), 11);
+        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2025, 5, 14, 6, 10, 34).single().unwrap();
+        assert_first_time(dt);
     }
     #[test]
     fn test_get_schedule_utc() {
-        let dt = chrono::Utc.with_ymd_and_hms(2024, 10, 25, 2, 10, 34).single().unwrap();
-        let schedule = super::get_schedule(dt).unwrap();
-        assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].troop.name(), "鋼塊の重滅兵団");
-        assert_eq!(schedule[1].troop.name(), "全兵団");
-
-        let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
-        assert_eq!(jst.year(), 2024);
-        assert_eq!(jst.month(), 10);
-        assert_eq!(jst.day(), 25);
-        assert_eq!(jst.hour(), 11);
+        let dt = chrono::Utc.with_ymd_and_hms(2025, 5, 13, 21, 10, 34).single().unwrap();
+        assert_first_time(dt);
     }
     #[test]
     fn test_get_schedule_sst() {
-        let dt = chrono_tz::Asia::Singapore.with_ymd_and_hms(2024, 10, 25, 10, 10, 34).single().unwrap();
-        let schedule = super::get_schedule(dt).unwrap();
-        assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].troop.name(), "鋼塊の重滅兵団");
-        assert_eq!(schedule[1].troop.name(), "全兵団");
-
-        let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
-        assert_eq!(jst.year(), 2024);
-        assert_eq!(jst.month(), 10);
-        assert_eq!(jst.day(), 25);
-        assert_eq!(jst.hour(), 11);
+        let dt = chrono_tz::Asia::Singapore.with_ymd_and_hms(2025, 5, 14, 5, 10, 34).single().unwrap();
+        assert_first_time(dt);
     }
     #[test]
     fn text_get_schedule_by_epoch() {
-        // 2024-10-25T11:10:34Z
-        let epoch = 1729822234000;
+        // 2025-05-18T15:15:34+09:00  // slime -> wood
+        let epoch = 1747548934000;
         let schedule = super::get_schedule_from_epoch_millis(epoch).unwrap();
-        assert_eq!(schedule.len(), 24);
-        assert_eq!(schedule[0].troop.name(), "鋼塊の重滅兵団");
-        assert_eq!(schedule[1].troop.name(), "全兵団");
-
-        let jst = schedule[0].started_at.with_timezone(&chrono_tz::Asia::Tokyo);
-        assert_eq!(jst.year(), 2024);
-        assert_eq!(jst.month(), 10);
-        assert_eq!(jst.day(), 25);
-        assert_eq!(jst.hour(), 11);
+        assert_eq!(schedule[0].troop.name(), "彩虹の粘塊兵団");
+        assert_eq!(schedule[1].troop.name(), "腐緑の樹葬兵団");
     }
 }
 
