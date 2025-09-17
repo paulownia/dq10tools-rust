@@ -50,7 +50,8 @@ pub fn get_levels<Tz : TimeZone>(now: DateTime<Tz>) -> Option<Value> where Tz::O
             "厭悪のルベランギス": d0,
             "絶念のアウルモッド": d1,
             "狂禍のフラウソン": d0,
-            "悲愴のウィリーデ" : d1
+            "悲愴のウィリーデ" : d1,
+            "燦滅のノクゼリア": d0
         },
         "term": {
             "from": from.format("%Y-%m-%dT%H:%M:%S%:z").to_string(),
