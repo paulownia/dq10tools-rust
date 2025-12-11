@@ -91,44 +91,45 @@ const ALL:     SingleColored = SingleColored::new("全兵団", 1);
 const VEGETABLE: Single256Colored = Single256Colored::new("青鮮の菜果兵団", 190);
 const STEEL:     Single256Colored = Single256Colored::new("鋼塊の重滅兵団", 103);
 const GOLD:      Single256Colored = Single256Colored::new("金神の遺宝兵団", 220);
+const GANG:      Single256Colored = Single256Colored::new("紅爆の暴賊兵団", 124);
 
-// 2025-05-14 6:00を起点とするスケジュール
+// 2025-12-10 6:00を起点とするスケジュール
 const CYCLE: [& dyn Troop; 30] = [
-    &STEEL,
     &GOLD,
+    &GANG,
     &ALL,
     &BEAST,
     &ZOMBIE,
     &DRAGON,
     &BIRD,
     &STEEL,
-    &GOLD,
+    &GANG,
     &ALL,
-    &STEEL,
     &GOLD,
+    &GANG,
     &ALL,
     &MACHINE,
     &INSECT,
     &SLIME,
     &WOOD,
     &STEEL,
-    &GOLD,
+    &GANG,
     &ALL,
-    &STEEL,
     &GOLD,
+    &GANG,
     &ALL,
     &GOLEM,
     &MARINE,
     &FLOWER,
     &VEGETABLE,
     &STEEL,
-    &GOLD,
+    &GANG,
     &ALL,
 ];
 
 pub fn get_base_point() -> NaiveDateTime {
-    // JSTの2025-05-14 6時 = UTCの2025-05-13 21時
-    Utc.with_ymd_and_hms(2025, 5, 13, 21, 0, 0).unwrap().naive_utc()
+    // JSTの2025-12-10 6時 = UTCの2025-12-09 21時
+    Utc.with_ymd_and_hms(2025, 12, 9, 21, 0, 0).unwrap().naive_utc()
 }
 
 pub fn calc_period<Tz: TimeZone>(dt: &DateTime<Tz>) -> Result<usize, String> {
