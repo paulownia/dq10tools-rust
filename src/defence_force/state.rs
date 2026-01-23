@@ -2,8 +2,8 @@ use crate::defence_force::troop::*;
 use chrono::{DateTime, Local, Duration, Timelike, TimeZone};
 
 pub struct State {
-    pub troop: &'static dyn Troop,
-    pub next_troop: &'static dyn Troop,
+    pub troop: Troop,
+    pub next_troop: Troop,
     pub next_in: u32,
     pub changed_at: chrono::DateTime<Local>
 }

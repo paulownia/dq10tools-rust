@@ -3,7 +3,7 @@ use chrono::{DateTime, Datelike, Duration, Local, TimeZone, Timelike, Utc};
 
 pub struct Event {
     pub started_at: DateTime<Local>,
-    pub troop: &'static dyn Troop
+    pub troop: Troop
 }
 
 pub fn get_current_schedule() -> Option<Vec<Event>> {
