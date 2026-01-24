@@ -123,21 +123,50 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_eq() {
-        assert_eq!(MARINE, MARINE);
-        assert_eq!(DRAGON, DRAGON);
-        assert_eq!(SLIME, SLIME);
-        assert_ne!(MARINE, SLIME);
-        assert_ne!(SLIME, DRAGON);
-        assert_ne!(DRAGON, MARINE);
+    fn test_calc_period_at_base_point() {
+        let dt = Utc.with_ymd_and_hms(2025, 12, 9, 21, 0, 0).unwrap();
+        assert_eq!(calc_period(&dt).unwrap(), 0);
     }
 
     #[test]
-    fn test_eq_same_name_different_color() {
-        let a = Troop::standard("a", 1);
-        let b = Troop::standard("a", 2);
+    fn test_calc_period_one_hour_later() {
+        let dt = Utc.with_ymd_and_hms(2025, 12, 9, 22, 0, 0).unwrap();
+        assert_eq!(calc_period(&dt).unwrap(), 1);
+    }
 
-        // 色が違えば別の兵団
-        assert_ne!(a, b);
+    #[test]
+    fn test_calc_period_one_cycle_later() {
+        let dt = Utc.with_ymd_and_hms(2025, 12, 11, 3, 0, 0).unwrap();
+        assert_eq!(calc_period(&dt).unwrap(), 30);
+    }
+
+    #[test]
+    fn test_calc_period_before_base_point_is_error() {
+        let dt = Utc.with_ymd_and_hms(2025, 12, 9, 20, 0, 0).unwrap();
+        assert!(calc_period(&dt).is_err());
+    }
+
+    #[test]
+    fn test_get_troop_by_period_first() {
+        assert_eq!(get_troop_by_period(0), GOLD);
+    }
+
+    #[test]
+    fn test_get_troop_by_period_last() {
+        assert_eq!(get_troop_by_period(29), ALL);
+    }
+
+    #[test]
+    fn test_get_troop_by_period_wraps_around() {
+        // サイクルが正しく循環すること
+        assert_eq!(get_troop_by_period(30), get_troop_by_period(0));
+        assert_eq!(get_troop_by_period(60), get_troop_by_period(0));
+        assert_eq!(get_troop_by_period(31), get_troop_by_period(1));
+    }
+
+    #[test]
+    fn test_get_troop_by_period_mid_cycle() {
+        assert_eq!(get_troop_by_period(3), BEAST);
+        assert_eq!(get_troop_by_period(15), SLIME);
     }
 }
