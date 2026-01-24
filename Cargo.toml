@@ -2,7 +2,7 @@
 name = "dq10tools"
 version = "7.6.1"
 authors = ["hisanori <hisary@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [[bin]]
 name = "astoltia-standard-time"
