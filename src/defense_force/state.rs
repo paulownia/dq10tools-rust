@@ -1,4 +1,4 @@
-use crate::defence_force::troop::*;
+use crate::defense_force::troop::*;
 use chrono::{DateTime, Local, Duration, Timelike, TimeZone};
 
 pub struct State {

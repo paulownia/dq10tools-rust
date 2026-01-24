@@ -1,4 +1,4 @@
-use dq10tools::defence_force;
+use dq10tools::defense_force;
 use chrono::{Local, DateTime, TimeZone, NaiveDateTime};
 use std::process;
 use clap::Parser;
@@ -39,7 +39,7 @@ fn main() {
         }
     };
 
-    let opt_schedule = defence_force::schedule::get_schedule_in(dt, args.count);
+    let opt_schedule = defense_force::schedule::get_schedule_in(dt, args.count);
 
     if let Some(schedule) = opt_schedule {
         for event in schedule {
