@@ -74,21 +74,21 @@ mod tests {
         let opt = super::get_levels(jst.with_ymd_and_hms(2022, 5, 11, 12, 0, 0).single().unwrap());
         assert!(opt.is_some());
         let data = opt.unwrap();
-        assert_eq!(data["level"]["厭悪のルベランギス"], 1);
+        assert_eq!(data["level"]["燦滅のノクゼリア"], 1);
         assert_eq!(data["term"]["from"].as_str(), Some("2022-05-11T06:00:00+09:00"));
         assert_eq!(data["term"]["to"].as_str(), Some("2022-05-12T05:59:59+09:00"));
 
         let opt = super::get_levels(jst.with_ymd_and_hms(2022, 5, 13, 5, 0, 0).single().unwrap());
         assert!(opt.is_some());
         let data = opt.unwrap();
-        assert_eq!(data["level"]["厭悪のルベランギス"], 2);
+        assert_eq!(data["level"]["燦滅のノクゼリア"], 2);
         assert_eq!(data["term"]["from"].as_str(), Some("2022-05-12T06:00:00+09:00"));
         assert_eq!(data["term"]["to"].as_str(), Some("2022-05-13T05:59:59+09:00"));
 
         let opt = super::get_levels(Tokyo.with_ymd_and_hms(2022, 5, 13, 5, 0, 0).single().unwrap());
         assert!(opt.is_some());
         let data = opt.unwrap();
-        assert_eq!(data["level"]["厭悪のルベランギス"], 2);
+        assert_eq!(data["level"]["燦滅のノクゼリア"], 2);
         assert_eq!(data["term"]["from"].as_str(), Some("2022-05-12T06:00:00+09:00"));
         assert_eq!(data["term"]["to"].as_str(), Some("2022-05-13T05:59:59+09:00"));
     }
@@ -99,7 +99,7 @@ mod tests {
         let opt = super::get_levels(Utc.with_ymd_and_hms(2022, 5, 11, 12, 0, 0).single().unwrap());
         assert!(opt.is_some());
         let data = opt.unwrap();
-        assert_eq!(data["level"]["厭悪のルベランギス"], 1);
+        assert_eq!(data["level"]["燦滅のノクゼリア"], 1);
         assert_eq!(data["term"]["from"], "2022-05-10T21:00:00+00:00");
         assert_eq!(data["term"]["to"], "2022-05-11T20:59:59+00:00");
 
@@ -107,7 +107,7 @@ mod tests {
         let opt = super::get_levels(Utc.with_ymd_and_hms(2022, 5, 13, 5, 0, 0).single().unwrap());
         assert!(opt.is_some());
         let data = opt.unwrap();
-        assert_eq!(data["level"]["厭悪のルベランギス"], 1);
+        assert_eq!(data["level"]["燦滅のノクゼリア"], 1);
         assert_eq!(data["term"]["from"], "2022-05-12T21:00:00+00:00");
         assert_eq!(data["term"]["to"], "2022-05-13T20:59:59+00:00");
     }
