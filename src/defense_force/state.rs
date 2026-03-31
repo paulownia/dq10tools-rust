@@ -1,5 +1,5 @@
 use crate::defense_force::troop::*;
-use chrono::{DateTime, Local, Duration, Timelike, TimeZone};
+use chrono::{DateTime, Local, Duration, Timelike, Utc};
 
 pub struct State {
     pub troop: Troop,
@@ -9,12 +9,12 @@ pub struct State {
 }
 
 pub fn get_current_state() -> Option<State> {
-    get_state(Local::now())
+    get_state(Utc::now())
 }
 
-pub fn get_state<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<State> {
+pub fn get_state(dt: DateTime<Utc>) -> Option<State> {
     calc_period(&dt).ok().and_then( |period| {
-        let mut next_in = 60 - dt.naive_utc().minute();
+        let mut next_in = 60 - dt.minute();
 
         let mut next_period = period + 1;
 
@@ -25,13 +25,13 @@ pub fn get_state<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<State> {
 
         let duration = Duration::try_minutes(next_in as i64)?;
 
-        let changed_at = dt.clone() + duration;
+        let changed_at = (dt + duration).with_timezone(&Local);
 
         Some(State {
             troop: get_troop_by_period(period),
             next_troop: get_troop_by_period(next_period),
             next_in: next_in,
-            changed_at: changed_at.with_timezone(&Local)
+            changed_at,
         })
     })
 }
@@ -48,7 +48,7 @@ mod tests {
     #[test]
     fn test_get_state_is_none_before_basepoint() {
         let dt = chrono::Local.with_ymd_and_hms(2018, 9, 20, 15, 3, 15).single().unwrap();
-        let state = super::get_state(dt);
+        let state = super::get_state(dt.to_utc());
         assert!(state.is_none());
     }
 
@@ -56,7 +56,7 @@ mod tests {
     fn test_get_state_jst() {
         // 起点から36時間後
         let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2025, 12, 11, 18, 4, 0).single().unwrap();
-        let state = super::get_state(dt);
+        let state = super::get_state(dt.to_utc());
         let state = state.unwrap();
         assert!(state.troop.name().contains("冥翼"));
         assert!(state.next_troop.name().contains("重滅"));
@@ -66,7 +66,7 @@ mod tests {
     fn test_get_state_east0900() {
         // 起点から36時間後
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2025, 12, 11, 18, 4, 0).single().unwrap();
-        let state = super::get_state(dt);
+        let state = super::get_state(dt.to_utc());
         let state = state.unwrap();
         assert!(state.troop.name().contains("冥翼"));
         assert!(state.next_troop.name().contains("重滅"));

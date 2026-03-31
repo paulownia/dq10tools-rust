@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeZone, NaiveDateTime};
+use chrono::{DateTime, Local, TimeZone, NaiveDateTime, Utc};
 use chrono_tz::Asia::Tokyo;
 
 #[derive(PartialEq, Eq)]
@@ -33,10 +33,10 @@ const SEQUENCE: [&Boss; 8] = [
 ];
 
 pub fn get_current_event() -> Event {
-    get_event(Local::now())
+    get_event(Utc::now())
 }
 
-pub fn get_event<Tz: TimeZone>(dt: DateTime<Tz>) -> Event {
+pub fn get_event(dt: DateTime<Utc>) -> Event {
     let base_point = get_base_point();
     let calc_point = dt.naive_utc();
     let duration = calc_point - base_point;
@@ -53,17 +53,17 @@ pub fn get_event<Tz: TimeZone>(dt: DateTime<Tz>) -> Event {
     }
 }
 
-pub fn get_cycle<Tz: TimeZone>(dt: DateTime<Tz>) -> Vec<Event> {
+pub fn get_cycle(dt: DateTime<Utc>) -> Vec<Event> {
     let mut result = Vec::new();
     for i in 0..SEQUENCE.len() {
-        let boss = get_event(dt.clone() + chrono::Duration::days(i as i64 * 3));
+        let boss = get_event(dt + chrono::Duration::days(i as i64 * 3));
         result.push(boss);
     }
     result
 }
 
 pub fn get_next_cycle() -> Vec<Event> {
-    get_cycle(Local::now())
+    get_cycle(Utc::now())
 }
 
 fn get_base_point() -> NaiveDateTime {
@@ -81,33 +81,32 @@ mod tests {
         // 基準日の6時から3日周期でボスが変わる
         let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
         let dt = tz.with_ymd_and_hms(2025, 1, 29, 13, 0, 0).single().unwrap();
-        let event = super::get_event(dt);
+        let event = super::get_event(dt.to_utc());
         assert_eq!(event.boss.name, "源世鳥アルマナ");
         assert_eq!(event.started_at, tz.with_ymd_and_hms(2025, 1, 29, 6, 0, 0).single().unwrap());
 
         let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
         let dt = tz.with_ymd_and_hms(2025, 2, 1, 5, 59, 59).single().unwrap();
-        let event = super::get_event(dt);
+        let event = super::get_event(dt.to_utc());
         assert_eq!(event.boss.name, "源世鳥アルマナ");
         assert_eq!(event.started_at, tz.with_ymd_and_hms(2025, 1, 29, 6, 0, 0).single().unwrap());
 
         // 次のボスの切り替わり時間
         let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
         let dt = tz.with_ymd_and_hms(2025, 2, 1, 6, 0, 0).single().unwrap();
-        let event = super::get_event(dt);
+        let event = super::get_event(dt.to_utc());
         assert_eq!(event.boss.name, "じげんりゅう");
         assert_eq!(event.started_at, tz.with_ymd_and_hms(2025, 2, 1, 6, 0, 0).single().unwrap());
 
         // 繰り返しテスト, 24日後に同じボスが出現
         let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
         let dt = tz.with_ymd_and_hms(2025, 2, 19, 6, 0, 0).single().unwrap();
-        let event = super::get_event(dt);
+        let event = super::get_event(dt.to_utc());
         assert_eq!(event.boss.name, "堕天使エルギオス");
         assert_eq!(event.started_at, tz.with_ymd_and_hms(2025, 2, 19, 6, 0, 0).single().unwrap());
 
-        let tz = chrono::FixedOffset::east_opt(9 * 3600).unwrap();
         let dt = dt + chrono::Duration::days(24);
-        let event = super::get_event(dt);
+        let event = super::get_event(dt.to_utc());
         assert_eq!(event.boss.name, "堕天使エルギオス");
         assert_eq!(event.started_at, tz.with_ymd_and_hms(2025, 3, 15, 6, 0, 0).single().unwrap());
     }

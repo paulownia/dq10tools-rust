@@ -1,5 +1,5 @@
 use dq10tools::defense_force;
-use chrono::{Local, DateTime, TimeZone, NaiveDateTime};
+use chrono::{Local, DateTime, TimeZone, NaiveDateTime, Utc};
 use std::process;
 use clap::Parser;
 
@@ -28,10 +28,10 @@ fn parse_as_local_datetime(s: &str) -> Result<DateTime<Local>, String>  {
 fn main() {
     let args = Args::parse();
 
-    let dt: DateTime<Local> = match args.datetime {
-        None => Local::now(),
+    let dt: DateTime<Utc> = match args.datetime {
+        None => Utc::now(),
         Some(dt_str) => match parse_as_local_datetime(&dt_str) {
-            Ok(dt) => dt,
+            Ok(dt) => dt.to_utc(),
             Err(e) => {
                 eprintln!("{}", e);
                 process::exit(1)

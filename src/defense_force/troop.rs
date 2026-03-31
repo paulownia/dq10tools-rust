@@ -103,7 +103,7 @@ pub fn get_base_point() -> NaiveDateTime {
     Utc.with_ymd_and_hms(2025, 12, 9, 21, 0, 0).unwrap().naive_utc()
 }
 
-pub fn calc_period<Tz: TimeZone>(dt: &DateTime<Tz>) -> Result<usize, String> {
+pub fn calc_period(dt: &DateTime<Utc>) -> Result<usize, String> {
     let base_point = get_base_point();
     let start_time = dt.naive_utc();
     if start_time < base_point {

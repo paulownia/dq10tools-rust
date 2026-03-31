@@ -60,7 +60,7 @@ pub fn from_timestamp_millis(millis_from_epoch: i64) -> Option<AST> {
     DateTime::from_timestamp_millis(millis_from_epoch).and_then(|u| from_datetime(u))
 }
 
-pub fn from_datetime<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<AST> {
+pub fn from_datetime(dt: DateTime<Utc>) -> Option<AST> {
     from_naive_utc(dt.naive_utc())
 }
 
@@ -84,42 +84,42 @@ mod tests {
     #[test]
     fn test_from_datetime_jst1() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 5, 31, 7, 3, 15).single().unwrap();
-        let ast = super::from_datetime(dt).unwrap();
+        let ast = super::from_datetime(dt.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 21);
         assert_eq!(ast.time().minute(), 5);
     }
     #[test]
     fn test_from_datetime_jst2() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
-        let ast = super::from_datetime(dt).unwrap();
+        let ast = super::from_datetime(dt.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 0);
         assert_eq!(ast.time().minute(), 0);
     }
     #[test]
     fn test_from_datetime_jst3() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 13, 10, 22, 30).single().unwrap();
-        let ast = super::from_datetime(dt).unwrap();
+        let ast = super::from_datetime(dt.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 15);
         assert_eq!(ast.time().minute(), 30);
     }
     #[test]
     fn test_from_datetime_jst4() {
         let jst = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2018, 6, 1, 7, 3, 15).single().unwrap();
-        let ast = super::from_datetime(jst).unwrap();
+        let ast = super::from_datetime(jst.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 21);
         assert_eq!(ast.time().minute(), 5);
     }
     #[test]
     fn test_from_datetime_jst5() {
         let jst = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2018, 6, 1, 0, 0, 0).single().unwrap();
-        let ast = super::from_datetime(jst).unwrap();
+        let ast = super::from_datetime(jst.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 0);
         assert_eq!(ast.time().minute(), 0);
     }
     #[test]
     fn test_from_datetime_sst1() {
         let sst = chrono_tz::Asia::Singapore.with_ymd_and_hms(2018, 5, 30, 23, 0, 0).single().unwrap();
-        let ast = super::from_datetime(sst).unwrap();
+        let ast = super::from_datetime(sst.to_utc()).unwrap();
         assert_eq!(ast.time().hour(), 0);
         assert_eq!(ast.time().minute(), 0);
     }
@@ -189,7 +189,7 @@ mod tests {
     #[test]
     fn test_same_from_timestamp_and_utc_now() {
         let utc = chrono::Utc::now();
-        // ミリ秒を含めない含めない時刻に変換
+        // ミリ秒を含めない時刻に変換
         let utc = chrono::Utc.with_ymd_and_hms(utc.year(), utc.month(), utc.day(), utc.hour(), utc.minute(), utc.second()).single().unwrap();
         let epoch = utc.timestamp();
         let ast1 = super::from_timestamp(epoch).unwrap();
@@ -199,11 +199,11 @@ mod tests {
     #[test]
     fn test_same_from_timestamp_and_local_now() {
         let l = chrono::Local::now();
-        // ミリ秒を含めない含めない時刻に変換
+        // ミリ秒を含めない時刻に変換
         let l = chrono::Local.with_ymd_and_hms(l.year(), l.month(), l.day(), l.hour(), l.minute(), l.second()).single().unwrap();
         let e = l.timestamp();
         let ast1 = super::from_timestamp(e).unwrap();
-        let ast2 = super::from_datetime(l).unwrap();
+        let ast2 = super::from_datetime(l.to_utc()).unwrap();
         assert_eq!(ast1, ast2)
     }
     #[test]
@@ -212,7 +212,7 @@ mod tests {
         let l = chrono::Local.with_ymd_and_hms(l.year(), l.month(), l.day(), l.hour(), l.minute(), l.second()).single().unwrap();
         let u = chrono::Utc::now();
         let u = chrono::Utc.with_ymd_and_hms(u.year(), u.month(), u.day(), u.hour(), u.minute(), u.second()).single().unwrap();
-        let ast1 = super::from_datetime(l).unwrap();
+        let ast1 = super::from_datetime(l.to_utc()).unwrap();
         let ast2 = super::from_datetime(u).unwrap();
         assert_eq!(ast1, ast2)
     }

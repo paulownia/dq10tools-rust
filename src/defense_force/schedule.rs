@@ -7,14 +7,14 @@ pub struct Event {
 }
 
 pub fn get_current_schedule() -> Option<Vec<Event>> {
-    get_schedule_in(Local::now(), 24)
+    get_schedule_in(Utc::now(), 24)
 }
 
 pub fn get_current_schedule_in(count: usize) -> Option<Vec<Event>> {
-    get_schedule_in(Local::now(), count)
+    get_schedule_in(Utc::now(), count)
 }
 
-pub fn get_schedule<Tz: TimeZone>(dt: DateTime<Tz>) -> Option<Vec<Event>> {
+pub fn get_schedule(dt: DateTime<Utc>) -> Option<Vec<Event>> {
     get_schedule_in(dt, 24)
 }
 
@@ -26,11 +26,9 @@ pub fn get_schedule_from_epoch_millis(epoch_millis:i64) -> Option<Vec<Event>> {
     get_schedule(dt)
 }
 
-pub fn get_schedule_in<Tz: TimeZone>(dt: DateTime<Tz>, count: usize) -> Option<Vec<Event>> {
+pub fn get_schedule_in(dt: DateTime<Utc>, count: usize) -> Option<Vec<Event>> {
     calc_period(&dt).ok().and_then( |period| {
-        let utc = dt.naive_utc();
-
-        Utc.with_ymd_and_hms(utc.year(), utc.month(), utc.day(), utc.hour(), 0, 0).single().map( |started_at| {
+        Utc.with_ymd_and_hms(dt.year(), dt.month(), dt.day(), dt.hour(), 0, 0).single().map( |started_at| {
             let mut vec: Vec<Event> = Vec::with_capacity(24);
 
             let troop = get_troop_by_period(period);
@@ -70,12 +68,12 @@ mod tests {
     #[test]
     fn test_get_schedule_none_before_basepoint() {
         let dt = chrono::Local.with_ymd_and_hms(2018, 9, 22, 23, 45, 10).single().unwrap();
-        let schedule = super::get_schedule(dt);
+        let schedule = super::get_schedule(dt.to_utc());
         assert!(schedule.is_none());
     }
 
     /// 周期の一番最初のスケジュールを確認するテスト
-    fn assert_first_time<Tz: TimeZone>(dt: chrono::DateTime<Tz>) {
+    fn assert_first_time(dt: chrono::DateTime<Utc>) {
         let schedule = super::get_schedule(dt).unwrap();
         assert_eq!(schedule.len(), 24);
         assert_eq!(schedule[0].troop.name(), "金神の遺宝兵団");
@@ -91,12 +89,12 @@ mod tests {
     #[test]
     fn test_get_schedule_east0900() {
         let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2025, 12, 10, 6, 0, 0).single().unwrap();
-        assert_first_time(dt);
+        assert_first_time(dt.to_utc());
     }
     #[test]
     fn test_get_schedule_jst() {
         let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2025, 12, 10, 6, 10, 34).single().unwrap();
-        assert_first_time(dt);
+        assert_first_time(dt.to_utc());
     }
     #[test]
     fn test_get_schedule_utc() {
@@ -106,7 +104,7 @@ mod tests {
     #[test]
     fn test_get_schedule_sst() {
         let dt = chrono_tz::Asia::Singapore.with_ymd_and_hms(2025, 12, 10, 5, 10, 34).single().unwrap();
-        assert_first_time(dt);
+        assert_first_time(dt.to_utc());
     }
     #[test]
     fn text_get_schedule_from_epoch_millis() {
