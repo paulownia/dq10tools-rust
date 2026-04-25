@@ -35,7 +35,7 @@ pub fn get_schedule_in(dt: DateTime<Utc>, count: usize) -> Option<Vec<Event>> {
 
             vec.push(Event{
                 started_at: started_at.with_timezone(&Local),
-                troop: troop
+                troop
             });
 
             for i in 1..count {
@@ -50,7 +50,7 @@ pub fn get_schedule_in(dt: DateTime<Utc>, count: usize) -> Option<Vec<Event>> {
                     Some(duration) => {
                         vec.push(Event{
                             started_at: (started_at + duration).with_timezone(&Local),
-                            troop: troop
+                            troop
                         })
                     },
                     None => break

@@ -30,7 +30,7 @@ pub fn get_state(dt: DateTime<Utc>) -> Option<State> {
         Some(State {
             troop: get_troop_by_period(period),
             next_troop: get_troop_by_period(next_period),
-            next_in: next_in,
+            next_in,
             changed_at,
         })
     })

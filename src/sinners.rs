@@ -58,7 +58,7 @@ pub fn get_levels<Tz: TimeZone>(now: DateTime<Utc>, tz: Tz) -> Option<Value> {
         }
     });
 
-    return Some(json)
+    Some(json)
 }
 
 

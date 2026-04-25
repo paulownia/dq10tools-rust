@@ -6,7 +6,7 @@ pub struct AST(NaiveTime);
 impl AST {
     pub fn state(&self) -> State {
         let h = self.0.hour();
-        if 6 <= h && h < 18 {
+        if (6..18).contains(&h) {
             State::Day
         } else {
             State::Night
@@ -41,8 +41,8 @@ impl State {
 impl std::fmt::Display for State {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            State::Day => write!(f, "{}", "朝"),
-            State::Night => write!(f, "{}", "夜"),
+            State::Day => f.write_str("朝"),
+            State::Night => f.write_str("夜"),
         }
    }
 }
@@ -53,11 +53,11 @@ pub fn now() -> AST {
 
 
 pub fn from_timestamp(sec_from_epoch: i64) -> Option<AST> {
-    DateTime::from_timestamp(sec_from_epoch, 0).and_then(|u| from_datetime(u))
+    DateTime::from_timestamp(sec_from_epoch, 0).and_then(from_datetime)
 }
 
 pub fn from_timestamp_millis(millis_from_epoch: i64) -> Option<AST> {
-    DateTime::from_timestamp_millis(millis_from_epoch).and_then(|u| from_datetime(u))
+    DateTime::from_timestamp_millis(millis_from_epoch).and_then(from_datetime)
 }
 
 pub fn from_datetime(dt: DateTime<Utc>) -> Option<AST> {
@@ -73,7 +73,7 @@ fn from_naive_utc(nt: NaiveDateTime) -> Option<AST> {
             let ast = jst0h + duration * 20;
             ast.time()
         })
-    }).map( |naive_time| AST(naive_time) )
+    }).map(AST)
 }
 
 
