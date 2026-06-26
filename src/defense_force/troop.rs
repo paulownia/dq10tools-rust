@@ -63,44 +63,48 @@ const VEGETABLE: Troop = Troop::extended("青鮮の菜果兵団", 190);
 const STEEL:     Troop = Troop::extended("鋼塊の重滅兵団", 103);
 const GOLD:      Troop = Troop::extended("金神の遺宝兵団", 220);
 const GANG:      Troop = Troop::extended("紅爆の暴賊兵団", 124);
+const NIGHTMARE: Troop = Troop::extended("冥黒の悪夢兵団", 129);
 
-// 2025-12-10 6:00を起点とするスケジュール
-const CYCLE: [Troop; 30] = [
-    GOLD,
-    GANG,
-    ALL,
-    BEAST,
-    ZOMBIE,
-    DRAGON,
+// 2026-06-25 6:00を起点とするスケジュール
+const CYCLE: [Troop; 33] = [
     BIRD,
-    STEEL,
-    GANG,
+    NIGHTMARE,
     ALL,
+    STEEL,
     GOLD,
     GANG,
+    NIGHTMARE,
     ALL,
     MACHINE,
     INSECT,
     SLIME,
     WOOD,
-    STEEL,
-    GANG,
+    NIGHTMARE,
     ALL,
+    STEEL,
     GOLD,
     GANG,
+    NIGHTMARE,
     ALL,
     GOLEM,
     MARINE,
     FLOWER,
     VEGETABLE,
-    STEEL,
-    GANG,
+    NIGHTMARE,
     ALL,
+    STEEL,
+    GOLD,
+    GANG,
+    NIGHTMARE,
+    ALL,
+    BEAST,
+    ZOMBIE,
+    DRAGON,
 ];
 
 pub fn get_base_point() -> NaiveDateTime {
-    // JSTの2025-12-10 6時 = UTCの2025-12-09 21時
-    Utc.with_ymd_and_hms(2025, 12, 9, 21, 0, 0).unwrap().naive_utc()
+    // JSTの2026-06-25 6時 = UTCの2026-06-24 21時
+    Utc.with_ymd_and_hms(2026, 6, 24, 21, 0, 0).unwrap().naive_utc()
 }
 
 pub fn calc_period(dt: &DateTime<Utc>) -> Result<usize, String> {
@@ -124,19 +128,19 @@ mod tests {
 
     #[test]
     fn test_calc_period_at_base_point() {
-        let dt = Utc.with_ymd_and_hms(2025, 12, 9, 21, 0, 0).unwrap();
+        let dt = Utc.with_ymd_and_hms(2026, 6, 24, 21, 0, 0).unwrap();
         assert_eq!(calc_period(&dt).unwrap(), 0);
     }
 
     #[test]
     fn test_calc_period_one_hour_later() {
-        let dt = Utc.with_ymd_and_hms(2025, 12, 9, 22, 0, 0).unwrap();
+        let dt = Utc.with_ymd_and_hms(2026, 6, 24, 22, 0, 0).unwrap();
         assert_eq!(calc_period(&dt).unwrap(), 1);
     }
 
     #[test]
     fn test_calc_period_one_cycle_later() {
-        let dt = Utc.with_ymd_and_hms(2025, 12, 11, 3, 0, 0).unwrap();
+        let dt = Utc.with_ymd_and_hms(2026, 6, 26, 3, 0, 0).unwrap();
         assert_eq!(calc_period(&dt).unwrap(), 30);
     }
 
@@ -148,25 +152,28 @@ mod tests {
 
     #[test]
     fn test_get_troop_by_period_first() {
-        assert_eq!(get_troop_by_period(0), GOLD);
+        assert_eq!(get_troop_by_period(0), BIRD);
     }
 
     #[test]
     fn test_get_troop_by_period_last() {
-        assert_eq!(get_troop_by_period(29), ALL);
+        assert_eq!(get_troop_by_period(32), DRAGON);
     }
 
     #[test]
     fn test_get_troop_by_period_wraps_around() {
         // サイクルが正しく循環すること
-        assert_eq!(get_troop_by_period(30), get_troop_by_period(0));
-        assert_eq!(get_troop_by_period(60), get_troop_by_period(0));
-        assert_eq!(get_troop_by_period(31), get_troop_by_period(1));
+        assert_eq!(get_troop_by_period(33), get_troop_by_period(0));
+        assert_eq!(get_troop_by_period(66), get_troop_by_period(0));
+        assert_eq!(get_troop_by_period(99), get_troop_by_period(0));
+        assert_eq!(get_troop_by_period(100), get_troop_by_period(1));
+        assert_eq!(get_troop_by_period(101), get_troop_by_period(2));
+        assert_eq!(get_troop_by_period(103), get_troop_by_period(4));
     }
 
     #[test]
     fn test_get_troop_by_period_mid_cycle() {
-        assert_eq!(get_troop_by_period(3), BEAST);
-        assert_eq!(get_troop_by_period(15), SLIME);
+        assert_eq!(get_troop_by_period(30), BEAST);
+        assert_eq!(get_troop_by_period(10), SLIME);
     }
 }

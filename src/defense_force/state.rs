@@ -55,21 +55,21 @@ mod tests {
     #[test]
     fn test_get_state_jst() {
         // 起点から36時間後
-        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2025, 12, 11, 18, 4, 0).single().unwrap();
+        let dt = chrono_tz::Asia::Tokyo.with_ymd_and_hms(2026, 6, 26, 18, 4, 0).single().unwrap();
         let state = super::get_state(dt.to_utc());
         let state = state.unwrap();
-        assert!(state.troop.name().contains("冥翼"));
-        assert!(state.next_troop.name().contains("重滅"));
+        assert!(state.troop.name().contains("重滅"));
+        assert!(state.next_troop.name().contains("遺宝"));
         assert_eq!(state.next_in, 56);
     }
     #[test]
     fn test_get_state_east0900() {
         // 起点から36時間後
-        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2025, 12, 11, 18, 4, 0).single().unwrap();
+        let dt = chrono::FixedOffset::east_opt(9 * 3600).unwrap().with_ymd_and_hms(2026, 6, 26, 18, 4, 0).single().unwrap();
         let state = super::get_state(dt.to_utc());
         let state = state.unwrap();
-        assert!(state.troop.name().contains("冥翼"));
-        assert!(state.next_troop.name().contains("重滅"));
+        assert!(state.troop.name().contains("重滅"));
+        assert!(state.next_troop.name().contains("遺宝"));
         assert_eq!(state.next_in, 56);
     }
 }
